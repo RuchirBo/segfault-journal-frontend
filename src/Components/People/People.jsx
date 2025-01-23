@@ -67,17 +67,25 @@ ErrorMessage.propTypes = {
   message: propTypes.string.isRequired,
 };
 
-function Person({ person }) {
+function Person({ person }, fetchPeople) {
   const { name, email } = person;
+
+  const deletePerson = () =>{
+    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}`)
+      .then(fetchPeople)
+  }
   return (
-    <Link to={name}>
-      <div className="person-container">
-        <h2>{name}</h2>
-        <p>
-          Email: {email}
-        </p>
-      </div>
-    </Link>
+    <div>
+      <Link to={name}>
+        <div className="person-container">
+          <h2>{name}</h2>
+          <p>
+            Email: {email}
+          </p>
+        </div>
+      </Link>
+      <button onClick={deletePerson}>Delete Person</button>
+    </div>
   );
 }
 Person.propTypes = {
@@ -126,7 +134,7 @@ function People() {
         setError={setError}
       />
       {error && <ErrorMessage message={error} />}
-      {people.map((person) => <Person key={person.name} person={person} />)}
+      {people.map((person) => <Person key={person.email} person={person} fetchPeople={fetchPeople} />)}
     </div>
   );
 }
