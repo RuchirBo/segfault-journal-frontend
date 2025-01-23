@@ -25,6 +25,8 @@ function AddPersonForm({
     const newPerson = {
       name: name,
       email: email,
+      roles: 'ED',
+      affiliation: '',
     }
     axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
       .then(fetchPeople)
