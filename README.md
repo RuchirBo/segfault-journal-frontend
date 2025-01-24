@@ -48,3 +48,7 @@ Use axios to send a GET request. Render the response in the browser.
 # Creating the Add Person button
 
 Use axios to send a POST request.
+
+# Progress and Goals
+
+[Progress and Goals](ProgressAndGoals.md)
