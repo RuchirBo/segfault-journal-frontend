@@ -6,12 +6,12 @@
 - Created Endpoints for CRUD functionality
 - Implemented Finite State Machine
 - Deployed to Python Anywhere
+- Add endpoints for manuscript
 - Partially connected backend to frontend
 
 
 ## Goals:
 - Add endpoints for text
-- Add endpoints for manuscript
 - Fully connect the front and backend
 - Create React frontend for API server
 - Implement FSM for the dashboard for manuscripts
