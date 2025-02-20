@@ -78,7 +78,7 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
   const updatePerson = (event) => {
     event.preventDefault();
     const updatedPerson = { name, email };
-    axios.post(`${PEOPLE_UPDATE_ENDPOINT}/${person.email}`, updatedPerson)
+    axios.put(`${PEOPLE_UPDATE_ENDPOINT}/${person.email}`, updatedPerson)
       .then(fetchPeople)
       .catch((error) => setError(`There was a problem updating the person. ${error}`));
   };
@@ -106,7 +106,7 @@ UpdatePersonForm.propTypes = {
   setError: propTypes.func.isRequired,
 };
 
-function Person({ person }, fetchPeople) {
+function Person({ person, fetchPeople, setError}) {
   const { name, email } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
@@ -136,6 +136,7 @@ function Person({ person }, fetchPeople) {
           person={person}
           cancel={toggleUpdateForm}
           fetchPeople={fetchPeople}
+          setError={setError}
         />
       )}
     </div>
@@ -190,7 +191,7 @@ function People() {
         setError={setError}
       />
       {error && <ErrorMessage message={error} />}
-      {people.map((person) => <Person key={person.email} person={person} fetchPeople={fetchPeople}/>)}
+      {people.map((person) => <Person key={person.email} person={person} fetchPeople={fetchPeople} setError={setError}/>)}
     </div>
   );
 }
