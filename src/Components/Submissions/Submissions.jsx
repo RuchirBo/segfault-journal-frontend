@@ -75,6 +75,13 @@ function Manuscripts() {
   const [error, setError] = useState('');
   const [addingManuscript, setAddingManuscript] = useState(false);
 
+  const deleteManuscript = (title, author) =>{
+    axios.delete(`${MANU_READ_ENDPOINT}/delete`,
+      {data: { title, author }}
+    )
+      .then(fetchManu)
+  }
+
   const fetchManu = () => {
     axios.get(MANU_READ_ENDPOINT)
       .then(({ data }) => {
@@ -111,6 +118,9 @@ function Manuscripts() {
               <p>{manuscript.author}</p>
               <p>{manuscript.description}</p>
               <Link to={`/manuscript/${manuscript.id}`}>View Details</Link>
+              <br></br>
+              <br></br>
+              <button onClick={() => deleteManuscript(manuscript.title, manuscript.author)}>Delete Manuscript</button>
             </div>
           ))
         ) : (
