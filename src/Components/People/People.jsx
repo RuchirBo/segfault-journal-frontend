@@ -111,7 +111,7 @@ function Person({ person }, fetchPeople) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const deletePerson = () =>{
-    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}`)
+    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}/delete`)
       .then(fetchPeople)
   }
   const toggleUpdateForm = () => {

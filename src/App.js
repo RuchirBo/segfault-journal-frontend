@@ -16,7 +16,7 @@ function PersonPage() {
   return <h1>{name}</h1>
 }
 
-const homeHeader = "Journal of React";
+const homeHeader = "Segfault Journal";
 
 function Home(){
   const styles = {
