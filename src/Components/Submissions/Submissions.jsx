@@ -28,16 +28,28 @@ function AddManuscriptForm({
 }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
+  const [authorEmail, setAuthorEmail] = useState('');
+  const [text, setText] = useState('');
+  const [abstract, setAbstract] = useState('');
+  const [editor, setEditor] = useState('');
 
   const changeTitle = (event) => { setTitle(event.target.value); };
   const changeAuthor = (event) => { setAuthor(event.target.value); };
+  const changeAuthorEmail = (event) => { setAuthorEmail(event.target.value); };
+  const changeText = (event) => { setText(event.target.value); };
+  const changeAbstract = (event) => { setAbstract(event.target.value); };
+  const changeEditor = (event) => { setEditor(event.target.value); };
+
 
   const addManuscript = (event) => {
     event.preventDefault();
     const newManuscript = {
       title: title,
       author: author,
-      referees: 'ED',
+      authorEmail: authorEmail,
+      text: text,
+      abstract: abstract,
+      editor: editor,
     }
     axios.put(MANU_CREATE_ENDPOINT, newManuscript)
       .then(fetchManu)
@@ -52,10 +64,32 @@ function AddManuscriptForm({
         Title
       </label>
       <input required type="text" id="title" value={title} onChange={changeTitle} />
+
       <label htmlFor="author">
         Author
       </label>
-      <input required type="text" id="author" onChange={changeAuthor} />
+      <input required type="text" id="author" value={author} onChange={changeAuthor} />
+
+      <label htmlFor="authorEmail">
+        AuthorEmail
+      </label>
+      <input required type="text" id="authorEmail" value={authorEmail} onChange={changeAuthorEmail} />
+      
+      <label htmlFor="text">
+        Text
+      </label>
+      <input required type="text" id="text" value={text} onChange={changeText} />
+
+      <label htmlFor="abstract">
+        Abstract
+      </label>
+      <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
+
+      <label htmlFor="editor">
+        Editor
+      </label>
+      <input required type="text" id="editor" value={editor} onChange={changeEditor} />
+
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={addManuscript}>Submit</button>
     </form>
