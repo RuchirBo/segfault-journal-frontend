@@ -105,15 +105,18 @@ ErrorMessage.propTypes = {
 
 function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
   const [name, setName] = useState(person.name);
-  const [email, setEmail] = useState(person.email);
+  const [affiliation, setAffiliation] = useState(person.affiliation);
+  const [roles, setRoles] = useState(person.roles);
   const [successMessage, setSuccessMessage] = useState('');
 
   const changeName = (event) => setName(event.target.value);
-  const changeEmail = (event) => setEmail(event.target.value);
+  const changeAffiliation = (event) => setAffiliation(event.target.value);
+  const changeRoles = (event) => setRoles(event.target.value.split(','));
+
 
   const updatePerson = (event) => {
     event.preventDefault();
-    const updatedPerson = { name, email };
+    const updatedPerson = { name, affiliation, roles };
     axios.put(`${PEOPLE_UPDATE_ENDPOINT}/${person.email}`, updatedPerson)
       .then(() => {
         fetchPeople();
@@ -131,8 +134,10 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
     <form>
       <label htmlFor="update-name">Name</label>
       <input required type="text" id="update-name" value={name} onChange={changeName} />
-      <label htmlFor="update-email">Email</label>
-      <input required type="text" id="update-email" value={email} onChange={changeEmail} />
+      <label htmlFor="update-affiliation">Affilation</label>
+      <input required type="text" id="update-affiliation" value={affiliation} onChange={changeAffiliation} />
+      <label htmlFor="update-roles">Roles</label>
+      <input required type="text" id="update-roles" value={roles} onChange={changeRoles} />
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={updatePerson}>Update</button>
 
@@ -149,6 +154,8 @@ UpdatePersonForm.propTypes = {
   person: propTypes.shape({
     name: propTypes.string.isRequired,
     email: propTypes.string.isRequired,
+    affiliation: propTypes.string.isRequired,
+    roles: propTypes.array.isRequired
   }).isRequired,
   cancel: propTypes.func.isRequired,
   fetchPeople: propTypes.func.isRequired,
