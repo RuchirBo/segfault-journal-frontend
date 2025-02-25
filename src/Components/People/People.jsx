@@ -40,7 +40,10 @@ function AddPersonForm({
         setSuccessMessage('Person successfully added');
         setTimeout(() => setSuccessMessage(''), 3000);
       })
-      .catch((error) => { setError(`There was a problem adding the person. ${error}`); });
+      .catch((error) => { 
+        const errorMessage = error.response?.data?.message || error.message;
+        setError(`There was a problem adding the person. ${errorMessage}`); 
+      });
   };
 
   if (!visible) return null;
@@ -117,7 +120,10 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
         setSuccessMessage('Person successfully updated');
         setTimeout(() => setSuccessMessage(''), 3000);
       })
-      .catch((error) => setError(`There was a problem updating the person. ${error}`));
+      .catch((error) => { 
+        const errorMessage = error.response?.data?.message || error.message;
+        setError(`There was a problem updating the person. ${errorMessage}`); 
+      });
   };
 
   if (!visible) return null;
