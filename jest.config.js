@@ -12,7 +12,7 @@ const config = {
   // bail: 0,
 
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/private/var/folders/2b/6tb9w4w1355gwtv2pzxnw8040000gn/T/jest_dx",
+  // cacheDirectory: "/private/var/folders/js/pptrj4_12tgggnzf4m7n3fqh0000gn/T/jest_dx",
 
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
@@ -198,7 +198,7 @@ const config = {
 
   moduleNameMapper: {
   '\\.(css|less)$': '<rootDir>/test/jest/__mocks__/styleMock.js',
-  '\\.(png|less)$': '<rootDir>/test/jest/__mocks__/imgMock.js',
+  // '\\.(png|less)$': '<rootDir>/test/jest/__mocks__/imgMock.js',
   },
 
   transform: {
