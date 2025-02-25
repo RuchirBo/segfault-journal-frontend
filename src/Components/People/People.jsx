@@ -17,20 +17,29 @@ function AddPersonForm({
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
+  const [affiliation, setAffiliation] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const changeName = (event) => { setName(event.target.value); };
   const changeEmail = (event) => { setEmail(event.target.value); };
+  const changeRole = (event) => { setRole(event.target.value); };
+  const changeAffiliation = (event) => { setAffiliation(event.target.value); };
 
   const addPerson = (event) => {
     event.preventDefault();
     const newPerson = {
       name: name,
       email: email,
-      roles: 'ED',
-      affiliation: '',
+      roles: role,
+      affiliation: affiliation,
     }
     axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
-      .then(fetchPeople)
+      .then(() => {
+        fetchPeople();
+        setSuccessMessage('Person successfully added!');
+        setTimeout(() => setSuccessMessage(''), 3000); // Hide after 3 seconds
+      })
       .catch((error) => { setError(`There was a problem adding the person. ${error}`); });
   };
 
@@ -45,8 +54,31 @@ function AddPersonForm({
         Email
       </label>
       <input required type="text" id="email" onChange={changeEmail} />
+      
+      <label htmlFor="affiliation">
+        Affiliation
+      </label>
+      <input required type="text" id="affiliation" onChange={changeAffiliation} />
+
+      <label htmlFor="roles">Roles</label>
+      <select id="role" value={role} onChange={changeRole} required>
+        <option value="">Select a role</option>
+        <option value="Author">Author</option>
+        <option value="Consulting Editor">Consulting Editor</option>
+        <option value="Managing Editor">Managing Editor</option>
+        <option value="Referee">Referee</option>
+      </select>
+
+
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={addPerson}>Submit</button>
+
+      {successMessage && (
+        <div className="success-popup">
+          {successMessage}
+        </div>
+      )}
+
     </form>
   );
 }
