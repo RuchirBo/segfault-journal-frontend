@@ -11,6 +11,7 @@ import './App.css';
 import Navbar from './Components/Navbar';
 import People from './Components/People';
 import Submissions from './Components/Submissions';
+import About from './Components/About';
 
 function PersonPage() {
   const { name } = useParams();
@@ -37,6 +38,7 @@ function App() {
         <Route path="people" element={<People />} />
         <Route path="people/:name" element={<PersonPage />} />
         <Route path="submissions" element={<Submissions />} />
+        <Route path="about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );

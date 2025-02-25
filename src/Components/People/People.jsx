@@ -37,8 +37,8 @@ function AddPersonForm({
     axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
       .then(() => {
         fetchPeople();
-        setSuccessMessage('Person successfully added!');
-        setTimeout(() => setSuccessMessage(''), 3000); // Hide after 3 seconds
+        setSuccessMessage('Person successfully added');
+        setTimeout(() => setSuccessMessage(''), 3000);
       })
       .catch((error) => { setError(`There was a problem adding the person. ${error}`); });
   };
@@ -54,7 +54,7 @@ function AddPersonForm({
         Email
       </label>
       <input required type="text" id="email" onChange={changeEmail} />
-      
+
       <label htmlFor="affiliation">
         Affiliation
       </label>
@@ -103,6 +103,7 @@ ErrorMessage.propTypes = {
 function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
   const [name, setName] = useState(person.name);
   const [email, setEmail] = useState(person.email);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const changeName = (event) => setName(event.target.value);
   const changeEmail = (event) => setEmail(event.target.value);
@@ -111,7 +112,11 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
     event.preventDefault();
     const updatedPerson = { name, email };
     axios.put(`${PEOPLE_UPDATE_ENDPOINT}/${person.email}`, updatedPerson)
-      .then(fetchPeople)
+      .then(() => {
+        fetchPeople();
+        setSuccessMessage('Person successfully updated');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      })
       .catch((error) => setError(`There was a problem updating the person. ${error}`));
   };
 
@@ -124,6 +129,12 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
       <input required type="text" id="update-email" value={email} onChange={changeEmail} />
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={updatePerson}>Update</button>
+
+      {successMessage && (
+        <div className="success-popup">
+          {successMessage}
+        </div>
+      )}
     </form>
   );
 }
