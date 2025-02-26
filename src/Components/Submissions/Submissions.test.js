@@ -5,14 +5,11 @@ import userEvent from '@testing-library/user-event'
 import Submissions from './Submissions'; //this is the component we want to test
 
 describe('Submissions', () => {
-  it('renders title, author, author email, text, abstract, and editor', async()=>{
-    render(<People />);
+  it('renders correct text on Submissions landing page', async()=>{
+    render(<Submissions />);
 
-    expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByText('Author')).toBeInTheDocument();
-    expect(screen.getByText('Author Email')).toBeInTheDocument();
-    expect(screen.getByText('Text')).toBeInTheDocument();
-    expect(screen.getByText('Abstract')).toBeInTheDocument();
-    expect(screen.getByText('Editor')).toBeInTheDocument();
+    expect(screen.getByText('View All Submissions')).toBeInTheDocument();
+    expect(screen.getByText('Add Manuscript')).toBeInTheDocument();
+    expect(screen.getByText('No manuscripts found.')).toBeInTheDocument();
   })
 })
