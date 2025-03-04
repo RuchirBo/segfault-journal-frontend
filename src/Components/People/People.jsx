@@ -199,7 +199,7 @@ function Person({ person, fetchPeople, setError, roleMap }) {
         <div className="person-container">
           <h2>{name}</h2>
           <p>Email: {email}</p>
-          <p><strong>Affiliation:</strong> {affiliation}</p> {/* Moved affiliation above roles */}
+          <p><strong>Affiliation:</strong> {affiliation}</p>
           <ul>
             <strong>Roles:</strong>
             {roles.map((role) => <li key={role}>{roleMap[role]}</li>)}
