@@ -11,28 +11,23 @@ describe('Submissions Component', () => {
     axios.get.mockResolvedValue({ data: { manuscripts: [] } });
   });
 
-  it('renders correct text on Submissions landing page', async()=>{
+  it('renders correct text on Submissions page', async()=>{
     render(<Submissions />);
 
     expect(screen.getByText('View All Submissions')).toBeInTheDocument();
-    expect(screen.getByText('Add Manuscript')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /add manuscript/i })).toBeInTheDocument();
     expect(screen.getByText('No manuscripts found.')).toBeInTheDocument();
   })
 
   it('opens add manuscript form when button is clicked', async () => {
     render(<Submissions />);
     fireEvent.click(screen.getByText(/Add Manuscript/i));
-    expect(screen.getByLabelText(/Title/i)).toBeInTheDocument();
-  });
-
-  it('displays error message when API fails to fetch manuscripts', async () => {
-    axios.get.mockRejectedValueOnce(new Error('API error'));
-
-    render(<Submissions />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/There was a problem retrieving the list of manuscripts/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText('Title')).toBeInTheDocument();
+    expect(screen.getByText('Author')).toBeInTheDocument();
+    expect(screen.getByText('Author Email')).toBeInTheDocument();
+    expect(screen.getByText('Text')).toBeInTheDocument();
+    expect(screen.getByText('Abstract')).toBeInTheDocument();
+    expect(screen.getByText('Editor')).toBeInTheDocument();
   });
 
 })

@@ -16,6 +16,9 @@ describe('People', () => {
     render(<People />);
 
     fireEvent.click(screen.getByRole('button', { name: /add a person/i }));
-    expect(screen.getByText('Add a Person')).toBeInTheDocument();
+    expect(screen.getByText('Name')).toBeInTheDocument();
+    expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(screen.getByText('Affiliation')).toBeInTheDocument();
+    expect(screen.getByText('Roles')).toBeInTheDocument();
   })
 })

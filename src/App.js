@@ -19,6 +19,7 @@ function PersonPage() {
 }
 
 const homeHeader = "Segfault Journal";
+// const newHomeHeader = "Segfaul Journal";
 
 function Home(){
   const styles = {
