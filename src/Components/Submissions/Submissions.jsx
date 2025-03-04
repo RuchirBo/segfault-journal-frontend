@@ -56,6 +56,12 @@ function AddManuscriptForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (!title || !author || !author_email || !text || !abstract || !editor) {
+      setError('All fields are required to add a manuscript.');
+      return;
+    }
+
     const newManuscript = {
       title,
       author,
