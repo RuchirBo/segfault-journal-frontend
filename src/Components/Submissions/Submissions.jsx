@@ -65,6 +65,15 @@ function AddManuscriptForm({
       editor,
     };
 
+    const resetManuscriptForm = () => {
+      setTitle('');
+      setAuthor('');
+      setAuthorEmail('');
+      setText('');
+      setAbstract('');
+      setEditor('');
+    };
+
     if (editingManuscript) {
       updateManuscript(editingManuscript, newManuscript);
     } else {
@@ -72,6 +81,7 @@ function AddManuscriptForm({
         .put(MANU_CREATE_ENDPOINT, newManuscript)
         .then(() => {
           fetchManu(); 
+          resetManuscriptForm();
           window.location.reload();
         })
         .catch((error) => {
