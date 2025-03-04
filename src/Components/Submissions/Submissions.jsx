@@ -31,7 +31,7 @@ function AddManuscriptForm({
 }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
-  const [authorEmail, setAuthorEmail] = useState('');
+  const [author_email, setAuthorEmail] = useState('');
   const [text, setText] = useState('');
   const [abstract, setAbstract] = useState('');
   const [editor, setEditor] = useState('');
@@ -40,7 +40,7 @@ function AddManuscriptForm({
     if (editingManuscript) {
       setTitle(editingManuscript.title);
       setAuthor(editingManuscript.author);
-      setAuthorEmail(editingManuscript.authorEmail);
+      setAuthorEmail(editingManuscript.author_email);
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
       setEditor(editingManuscript.editor);
@@ -59,7 +59,7 @@ function AddManuscriptForm({
     const newManuscript = {
       title,
       author,
-      authorEmail,
+      author_email,
       text,
       abstract,
       editor,
@@ -70,7 +70,10 @@ function AddManuscriptForm({
     } else {
       axios
         .put(MANU_CREATE_ENDPOINT, newManuscript)
-        .then(fetchManu)
+        .then(() => {
+          fetchManu(); 
+          window.location.reload();
+        })
         .catch((error) => {
           setError(`There was a problem adding the manuscript. ${error}`);
         });
@@ -103,8 +106,8 @@ function AddManuscriptForm({
       <label htmlFor="author">Author</label>
       <input required type="text" id="author" value={author} onChange={changeAuthor} />
 
-      <label htmlFor="authorEmail">Author Email</label>
-      <input required type="text" id="authorEmail" value={authorEmail} onChange={changeAuthorEmail} />
+      <label htmlFor="author_email">Author Email</label>
+      <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
 
       <label htmlFor="text">Text</label>
       <input required type="text" id="text" value={text} onChange={changeText} />
@@ -138,10 +141,10 @@ function Manuscripts() {
   const [addingManuscript, setAddingManuscript] = useState(false);
   const [editingManuscript, setEditingManuscript] = useState(null);
 
-  const deleteManuscript = (title, author, authorEmail, text, abstract, editor) => {
+  const deleteManuscript = (title, author, author_email, text, abstract, editor) => {
     axios
       .delete(`${MANU_READ_ENDPOINT}/delete`, {
-        data: { title, author, authorEmail, text, abstract, editor },
+        data: { title, author, author_email, text, abstract, editor },
       })
       .then(fetchManu)
       .catch((error) => setError(`There was a problem deleting the manuscript. ${error}`));
@@ -187,7 +190,7 @@ function Manuscripts() {
             <div key={manuscript.id} className="manuscript-item">
               <h3>{manuscript.title}</h3>
               <p>{manuscript.author}</p>
-              <p>{manuscript.authorEmail}</p>
+              <p>{manuscript.author_email}</p>
               <p>{manuscript.text}</p>
               <p>{manuscript.abstract}</p>
               <p>{manuscript.editor}</p>
@@ -200,7 +203,7 @@ function Manuscripts() {
                   deleteManuscript(
                     manuscript.title,
                     manuscript.author,
-                    manuscript.authorEmail,
+                    manuscript.author_email,
                     manuscript.text,
                     manuscript.abstract,
                     manuscript.editor
