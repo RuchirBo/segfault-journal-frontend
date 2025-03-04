@@ -8,12 +8,14 @@ import { BACKEND_URL } from '../../constants';
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 const PEOPLE_CREATE_ENDPOINT = `${BACKEND_URL}/people/create`;
 const PEOPLE_UPDATE_ENDPOINT = `${BACKEND_URL}/people/update`;
+const ROLES_ENDPOINT = `${BACKEND_URL}/roles`
 
 function AddPersonForm({
   visible,
   cancel,
   fetchPeople,
   setError,
+  roleOptions,
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -64,12 +66,14 @@ function AddPersonForm({
       <input required type="text" id="affiliation" onChange={changeAffiliation} />
 
       <label htmlFor="roles">Roles</label>
-      <select id="role" value={role} onChange={changeRole} required>
-        <option value="">Select a role</option>
-        <option value="Author">Author</option>
-        <option value="Consulting Editor">Consulting Editor</option>
-        <option value="Managing Editor">Managing Editor</option>
-        <option value="Referee">Referee</option>
+      <select multiple id="role" value={role} onChange={changeRole} required>
+        {
+          Object.keys(roleOptions).map((code)=>(
+            <option key={code} value={code}>
+              {roleOptions[code]}
+            </option>
+          ))
+        }
       </select>
 
 
@@ -90,6 +94,7 @@ AddPersonForm.propTypes = {
   cancel: propTypes.func.isRequired,
   fetchPeople: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
+  roleOptions: propTypes.object.isRequired,
 };
 
 function ErrorMessage({ message }) {
@@ -162,8 +167,8 @@ UpdatePersonForm.propTypes = {
   setError: propTypes.func.isRequired,
 };
 
-function Person({ person, fetchPeople, setError}) {
-  const { name, email } = person;
+function Person({ person, fetchPeople, setError, roleMap, }) {
+  const { name, email, roles } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const deletePerson = () =>{
@@ -182,6 +187,9 @@ function Person({ person, fetchPeople, setError}) {
           <p>
             Email: {email}
           </p>
+          <ul>
+            Roles: {roles.map((role)=> <li key={role}>{ roleMap[role] }</li>)}
+          </ul>
         </div>
       </Link>
       <button onClick={deletePerson}>Delete Person</button>
@@ -198,14 +206,15 @@ function Person({ person, fetchPeople, setError}) {
     </div>
   );
 }
-
 Person.propTypes = {
   person: propTypes.shape({
     name: propTypes.string.isRequired,
     email: propTypes.string.isRequired,
+    roles: propTypes.arrayOf(propTypes.string).isRequired,
   }).isRequired,
   fetchPeople: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
+  roleMap: propTypes.object.isRequired,
 };
 
 function peopleObjectToArray(Data) {
@@ -218,6 +227,7 @@ function People() {
   const [error, setError] = useState('');
   const [people, setPeople] = useState([]);
   const [addingPerson, setAddingPerson] = useState(false);
+  const [roleMap, setRoleMap] = useState({});
 
   const fetchPeople = () => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -225,11 +235,18 @@ function People() {
       .catch((error) => setError(`There was a problem retrieving the list of people. ${error}`));
   };
 
+  const getRoles = () => {
+    axios.get(ROLES_ENDPOINT)
+      .then(({ data }) => setRoleMap(data))
+      .catch((error) => { setError(`There was a problem getting roles. ${error}`); });
+  }
+  
+
   const showAddPersonForm = () => { setAddingPerson(true); };
   const hideAddPersonForm = () => { setAddingPerson(false); };
 
   useEffect(fetchPeople, []);
-
+  useEffect(getRoles,[]);
   return (
     <div className="wrapper">
       <header>
@@ -245,9 +262,20 @@ function People() {
         cancel={hideAddPersonForm}
         fetchPeople={fetchPeople}
         setError={setError}
+        roleOptions={roleMap}
       />
       {error && <ErrorMessage message={error} />}
-      {people.map((person) => <Person key={person.email} person={person} fetchPeople={fetchPeople} setError={setError}/>)}
+      {
+      people.map((person) => 
+        <Person 
+            key={person.email} 
+            person={person} 
+            fetchPeople={fetchPeople} 
+            setError={setError}
+            roleMap={roleMap}
+        />
+      )
+      }
     </div>
   );
 }
