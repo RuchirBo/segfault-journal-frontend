@@ -36,7 +36,7 @@ function AddPersonForm({
     const newPerson = {
       name: name,
       email: email,
-      roles: role.join(','), 
+      roles: role, 
       affiliation: affiliation,
     }
     axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
@@ -77,8 +77,6 @@ function AddPersonForm({
         ))}
       </select>
 
-
-
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={addPerson}>Submit</button>
 
@@ -109,6 +107,49 @@ function ErrorMessage({ message }) {
 ErrorMessage.propTypes = {
   message: propTypes.string.isRequired,
 };
+
+function Person({ person, fetchPeople, setError, roleMap }) {
+  const { name, email, roles, affiliation } = person;
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+
+  const deletePerson = () =>{
+    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}/delete`)
+      .then(fetchPeople)
+  }
+  const toggleUpdateForm = () => {
+    setShowUpdateForm(!showUpdateForm);
+  };
+
+  return (
+    <div>
+      <Link to={name}>
+        <div className="person-container">
+          <h2>{name}</h2>
+          <p>Email: {email}</p>
+          <p><strong>Affiliation:</strong> {affiliation}</p>
+          <ul>
+            Roles: {Array.isArray(roles) ? roles.map((role) => (
+                    <li key={role}>{roleMap[role]}</li>)) : <li>{roles}</li> 
+            }
+          </ul>
+        </div>
+      </Link>
+      <button onClick={deletePerson}>Delete Person</button>
+      <button onClick={toggleUpdateForm}>Update Person</button>
+      {showUpdateForm && (
+        <UpdatePersonForm
+          visible={showUpdateForm}
+          person={person}
+          cancel={toggleUpdateForm}
+          fetchPeople={fetchPeople}
+          setError={setError}
+          roleOptions={roleMap}
+        />
+      )}
+    </div>
+  );
+}
+
 
 function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError, roleOptions }) {
   const [name, setName] = useState(person.name);
@@ -181,46 +222,6 @@ UpdatePersonForm.propTypes = {
   roleOptions: propTypes.object.isRequired,
 };
 
-function Person({ person, fetchPeople, setError, roleMap }) {
-  const { name, email, roles, affiliation } = person;
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
-
-  const deletePerson = () =>{
-    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}/delete`)
-      .then(fetchPeople)
-  }
-  const toggleUpdateForm = () => {
-    setShowUpdateForm(!showUpdateForm);
-  };
-
-  return (
-    <div>
-      <Link to={name}>
-        <div className="person-container">
-          <h2>{name}</h2>
-          <p>Email: {email}</p>
-          <p><strong>Affiliation:</strong> {affiliation}</p>
-          <ul>
-            <strong>Roles:</strong>
-            {roles.map((role) => <li key={role}>{roleMap[role]}</li>)}
-          </ul>
-        </div>
-      </Link>
-      <button onClick={deletePerson}>Delete Person</button>
-      <button onClick={toggleUpdateForm}>Update Person</button>
-      {showUpdateForm && (
-        <UpdatePersonForm
-          visible={showUpdateForm}
-          person={person}
-          cancel={toggleUpdateForm}
-          fetchPeople={fetchPeople}
-          setError={setError}
-          roleOptions={roleMap}
-        />
-      )}
-    </div>
-  );
-}
 Person.propTypes = {
   person: propTypes.shape({
     name: propTypes.string.isRequired,
