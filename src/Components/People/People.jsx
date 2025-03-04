@@ -19,13 +19,16 @@ function AddPersonForm({
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState([]);
   const [affiliation, setAffiliation] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   const changeName = (event) => { setName(event.target.value); };
   const changeEmail = (event) => { setEmail(event.target.value); };
-  const changeRole = (event) => { setRole(event.target.value); };
+  const changeRole = (event) => {
+    const selectedRoles = Array.from(event.target.selectedOptions, option => option.value);
+    setRole(selectedRoles);
+  };  
   const changeAffiliation = (event) => { setAffiliation(event.target.value); };
 
   const addPerson = (event) => {
@@ -33,7 +36,7 @@ function AddPersonForm({
     const newPerson = {
       name: name,
       email: email,
-      roles: role,
+      roles: role.join(','), 
       affiliation: affiliation,
     }
     axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
@@ -67,14 +70,13 @@ function AddPersonForm({
 
       <label htmlFor="roles">Roles</label>
       <select multiple id="role" value={role} onChange={changeRole} required>
-        {
-          Object.keys(roleOptions).map((code)=>(
-            <option key={code} value={code}>
-              {roleOptions[code]}
-            </option>
-          ))
-        }
+        {Object.keys(roleOptions).map((code) => (
+          <option key={code} value={code}>
+            {roleOptions[code]}
+          </option>
+        ))}
       </select>
+
 
 
       <button type="button" onClick={cancel}>Cancel</button>
@@ -108,15 +110,19 @@ ErrorMessage.propTypes = {
   message: propTypes.string.isRequired,
 };
 
-function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
+function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError, roleOptions }) {
   const [name, setName] = useState(person.name);
   const [affiliation, setAffiliation] = useState(person.affiliation);
-  const [roles, setRoles] = useState(person.roles);
+  const [roles, setRoles] = useState(person.roles || []);
   const [successMessage, setSuccessMessage] = useState('');
 
   const changeName = (event) => setName(event.target.value);
   const changeAffiliation = (event) => setAffiliation(event.target.value);
-  const changeRoles = (event) => setRoles(event.target.value.split(','));
+  const changeRoles = (event) => {
+    const selectedRoles = Array.from(event.target.selectedOptions, option => option.value);
+    setRoles(selectedRoles);
+  };
+  
 
 
   const updatePerson = (event) => {
@@ -141,8 +147,15 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError }) {
       <input required type="text" id="update-name" value={name} onChange={changeName} />
       <label htmlFor="update-affiliation">Affilation</label>
       <input required type="text" id="update-affiliation" value={affiliation} onChange={changeAffiliation} />
-      <label htmlFor="update-roles">Roles</label>
-      <input required type="text" id="update-roles" value={roles} onChange={changeRoles} />
+      <label htmlFor="update-role">Roles</label>
+      <select multiple id="update-role" value={roles} onChange={changeRoles} required>
+        {Object.keys(roleOptions).map((code) => (
+          <option key={code} value={code}>
+            {roleOptions[code]}
+          </option>
+        ))}
+      </select>
+
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={updatePerson}>Update</button>
 
@@ -165,10 +178,11 @@ UpdatePersonForm.propTypes = {
   cancel: propTypes.func.isRequired,
   fetchPeople: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
+  roleOptions: propTypes.object.isRequired,
 };
 
-function Person({ person, fetchPeople, setError, roleMap, }) {
-  const { name, email, roles } = person;
+function Person({ person, fetchPeople, setError, roleMap }) {
+  const { name, email, roles, affiliation } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const deletePerson = () =>{
@@ -184,11 +198,11 @@ function Person({ person, fetchPeople, setError, roleMap, }) {
       <Link to={name}>
         <div className="person-container">
           <h2>{name}</h2>
-          <p>
-            Email: {email}
-          </p>
+          <p>Email: {email}</p>
+          <p><strong>Affiliation:</strong> {affiliation}</p> {/* Moved affiliation above roles */}
           <ul>
-            Roles: {roles.map((role)=> <li key={role}>{ roleMap[role] }</li>)}
+            <strong>Roles:</strong>
+            {roles.map((role) => <li key={role}>{roleMap[role]}</li>)}
           </ul>
         </div>
       </Link>
@@ -201,6 +215,7 @@ function Person({ person, fetchPeople, setError, roleMap, }) {
           cancel={toggleUpdateForm}
           fetchPeople={fetchPeople}
           setError={setError}
+          roleOptions={roleMap}
         />
       )}
     </div>
@@ -210,6 +225,7 @@ Person.propTypes = {
   person: propTypes.shape({
     name: propTypes.string.isRequired,
     email: propTypes.string.isRequired,
+    affiliation: propTypes.string.isRequired,
     roles: propTypes.arrayOf(propTypes.string).isRequired,
   }).isRequired,
   fetchPeople: propTypes.func.isRequired,
