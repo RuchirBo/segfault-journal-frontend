@@ -34,9 +34,7 @@ function AddManuscriptForm({
   const [author_email, setAuthorEmail] = useState('');
   const [text, setText] = useState('');
   const [abstract, setAbstract] = useState('');
-  const [editor_email, setEditorEmail] = useState('');
-  // const [successMessage, setSuccessMessage] = useState('');
-  
+  const [editor_email, setEditorEmail] = useState('');  
 
   useEffect(() => {
     if (editingManuscript) {
@@ -85,13 +83,10 @@ function AddManuscriptForm({
     if (editingManuscript) {
       updateManuscript(editingManuscript, newManuscript);
     } else {
-      console.log("inside")
       axios
         .put(MANU_CREATE_ENDPOINT, newManuscript)
         .then(() => {
           fetchManu(); 
-          // setSuccessMessage('Person successfully added');
-          // setTimeout(() => setSuccessMessage(''), 3000);
           resetManuscriptForm();
           window.location.reload();
         })
