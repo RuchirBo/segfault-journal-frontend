@@ -50,6 +50,7 @@ function AddPersonForm({
         setError(`There was a problem adding the person. ${errorMessage}`); 
       });
   };
+  
 
   if (!visible) return null;
   return (
@@ -108,14 +109,23 @@ ErrorMessage.propTypes = {
   message: propTypes.string.isRequired,
 };
 
-function Person({ person, fetchPeople, setError, roleMap }) {
+function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
   const { name, email, roles, affiliation } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
-  const deletePerson = () =>{
-    axios.delete(`${PEOPLE_READ_ENDPOINT }/${email}/delete`)
-      .then(fetchPeople)
-  }
+  const deletePerson = () => {
+    axios.delete(`${PEOPLE_READ_ENDPOINT}/${email}/delete`)
+      .then(() => {
+        fetchPeople();
+        setSuccessMessage('Person successfully deleted');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      })
+      .catch((error) => { 
+        const errorMessage = error.response?.data?.message || error.message;
+        setError(`There was a problem deleting the person. ${errorMessage}`); 
+      });
+  };
+  
   const toggleUpdateForm = () => {
     setShowUpdateForm(!showUpdateForm);
   };
@@ -163,8 +173,6 @@ function UpdatePersonForm({ visible, person, cancel, fetchPeople, setError, role
     const selectedRoles = Array.from(event.target.selectedOptions, option => option.value);
     setRoles(selectedRoles);
   };
-  
-
 
   const updatePerson = (event) => {
     event.preventDefault();
@@ -232,6 +240,7 @@ Person.propTypes = {
   fetchPeople: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
   roleMap: propTypes.object.isRequired,
+  setSuccessMessage: propTypes.func.isRequired,
 };
 
 function peopleObjectToArray(Data) {
@@ -245,6 +254,7 @@ function People() {
   const [people, setPeople] = useState([]);
   const [addingPerson, setAddingPerson] = useState(false);
   const [roleMap, setRoleMap] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const fetchPeople = () => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -258,43 +268,52 @@ function People() {
       .catch((error) => { setError(`There was a problem getting roles. ${error}`); });
   }
   
-
   const showAddPersonForm = () => { setAddingPerson(true); };
   const hideAddPersonForm = () => { setAddingPerson(false); };
 
   useEffect(fetchPeople, []);
   useEffect(getRoles,[]);
+
   return (
     <div className="wrapper">
       <header>
-        <h1>
-          View All People
-        </h1>
+        <h1>View All People</h1>
         <button type="button" onClick={showAddPersonForm}>
           Add a Person
         </button>
       </header>
+      
       <AddPersonForm
         visible={addingPerson}
         cancel={hideAddPersonForm}
         fetchPeople={fetchPeople}
         setError={setError}
         roleOptions={roleMap}
+        setSuccessMessage={setSuccessMessage}
       />
+      
+      {successMessage && (
+        <div className="success-popup">
+          {successMessage}
+        </div>
+      )}
+      
       {error && <ErrorMessage message={error} />}
       {
-      people.map((person) => 
-        <Person 
+        people.map((person) => 
+          <Person 
             key={person.email} 
             person={person} 
             fetchPeople={fetchPeople} 
             setError={setError}
             roleMap={roleMap}
-        />
-      )
+            setSuccessMessage={setSuccessMessage} 
+          />
+        )
       }
     </div>
   );
 }
+
 
 export default People;
