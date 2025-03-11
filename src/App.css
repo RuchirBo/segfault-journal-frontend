@@ -164,3 +164,22 @@ nav a:focus {
   margin: 0;
   font-size: 1.5rem;
 }
+
+.auth-links {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-links p {
+  margin: 0.5rem 0;
+}
+
+.auth-links a {
+  color: var(--poppy);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}

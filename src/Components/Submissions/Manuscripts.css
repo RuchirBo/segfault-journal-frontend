@@ -1,0 +1,34 @@
+.manuscript-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .manuscript-item h3 {
+    margin-bottom: 5px;
+  }
+  
+  .manuscript-item p {
+    margin: 3px 0;
+    font-size: 14px;
+  }
+  
+  .manuscript-item button {
+    margin-top: 2px;
+    margin-right: 5px;
+    padding: 6px 8px;
+    background-color: hsla(132, 27%, 63%, 1);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .manuscript-item button:hover {
+    background-color: rgb(62, 121, 74);
+  }
+  

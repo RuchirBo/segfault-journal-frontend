@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import propTypes from 'prop-types';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import './Manuscripts.css';
 
 import { BACKEND_URL } from '../../constants';
 
@@ -206,14 +207,13 @@ function Manuscripts() {
           manuscripts.map((manuscript) => (
             <div key={manuscript.id} className="manuscript-item">
               <h3>{manuscript.title}</h3>
-              <p>{manuscript.author}</p>
-              <p>{manuscript.author_email}</p>
-              <p>{manuscript.text}</p>
-              <p>{manuscript.abstract}</p>
-              <p>{manuscript.editor_email}</p>
+              <p><strong>Author:</strong> {manuscript.author}</p>
+              <p><strong>Author Email:</strong> {manuscript.author_email}</p>
+              <p><strong>Text:</strong> {manuscript.text}</p>
+              <p><strong>Abstract:</strong> {manuscript.abstract}</p>
+              <p><strong>Editor Email:</strong> {manuscript.editor_email}</p>
               <Link to={`/manuscript/${manuscript.id}`}>View Details</Link>
-              <br />
-              <br />
+              <br /><br />
               <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
               <button
                 onClick={() =>
