@@ -128,7 +128,14 @@ function AddManuscriptForm({
       <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
 
       <label htmlFor="text">Text</label>
-      <input required type="text" id="text" value={text} onChange={changeText} />
+      <textarea 
+        required 
+        id="text" 
+        value={text} 
+        onChange={changeText} 
+        rows="6"  
+        cols="50"
+      />
 
       <label htmlFor="abstract">Abstract</label>
       <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
