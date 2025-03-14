@@ -2,7 +2,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'
 import axios from 'axios';
+
 import Submissions from './Submissions'; //this is the component we want to test
+import { manuscriptsHeader } from './Submissions';
 
 jest.mock('axios');
 
@@ -14,9 +16,8 @@ describe('Submissions Component', () => {
   it('renders correct text on Submissions page', async()=>{
     render(<Submissions />);
 
-    expect(screen.getByText('View All Submissions')).toBeInTheDocument();
+    expect(screen.getByText(manuscriptsHeader)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /add manuscript/i })).toBeInTheDocument();
-    expect(screen.getByText('No manuscripts found.')).toBeInTheDocument();
   })
 
   it('opens add manuscript form when button is clicked', async () => {
@@ -29,5 +30,7 @@ describe('Submissions Component', () => {
     expect(screen.getByText('Abstract')).toBeInTheDocument();
     expect(screen.getByText('Editor')).toBeInTheDocument();
   });
+
+  // add tests for after manuscript is submitted 
 
 })

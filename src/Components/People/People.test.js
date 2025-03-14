@@ -3,12 +3,13 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'
 
 import People from './People'; //this is the component we want to test
+import { peopleHeader } from './People';
 
 describe('People', () => {
   it('renders header and button', async()=>{
     render(<People />);
 
-    expect(screen.getByText('View All People')).toBeInTheDocument();
+    expect(screen.getByText(peopleHeader)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /add a person/i })).toBeInTheDocument();
   })
 
@@ -21,4 +22,7 @@ describe('People', () => {
     expect(screen.getByText('Affiliation')).toBeInTheDocument();
     expect(screen.getByText('Roles')).toBeInTheDocument();
   })
+
+  // add tests for after person is created (using mocked data from axios calls) 
+
 })

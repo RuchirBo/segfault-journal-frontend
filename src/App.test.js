@@ -6,11 +6,10 @@ import App from './App'; //this is the component we want to test
 import {homeHeader } from './App';
 
 describe('App', () => {
-  it('renders nav bar and home', async()=>{
+  it('renders home page', async()=>{
     render(<App />);
     await screen.findByRole('heading');
     expect(screen.getByRole('heading')).toHaveTextContent(homeHeader);
     
-    // expect(screen.getAllByRole('listitem))
   })
 })

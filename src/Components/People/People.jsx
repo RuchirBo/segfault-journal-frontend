@@ -108,6 +108,8 @@ ErrorMessage.propTypes = {
   message: propTypes.string.isRequired,
 };
 
+const peopleHeader = "View All People";
+
 function Person({ person, fetchPeople, setError, roleMap }) {
   const { name, email, roles, affiliation } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
@@ -268,7 +270,7 @@ function People() {
     <div className="wrapper">
       <header>
         <h1>
-          View All People
+          {peopleHeader}
         </h1>
         <button type="button" onClick={showAddPersonForm}>
           Add a Person
@@ -298,3 +300,4 @@ function People() {
 }
 
 export default People;
+export {peopleHeader};

@@ -152,6 +152,8 @@ AddManuscriptForm.propTypes = {
   setEditingManuscript: propTypes.func.isRequired,
 };
 
+const manuscriptsHeader = "View All Submissions";
+
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);
   const [error, setError] = useState('');
@@ -183,7 +185,7 @@ function Manuscripts() {
   return (
     <div className="wrapper">
       <header>
-        <h1>View All Submissions</h1>
+        <h1>{manuscriptsHeader}</h1>
         <button onClick={() => setAddingManuscript(true)}>Add Manuscript</button>
       </header>
 
@@ -240,3 +242,4 @@ function Manuscripts() {
 }
 
 export default Manuscripts;
+export {manuscriptsHeader};
