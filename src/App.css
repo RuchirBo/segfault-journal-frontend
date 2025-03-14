@@ -1,166 +1,196 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+ box-sizing: border-box;
 }
 
 html {
-  --poppy: hsla(356, 74%, 52%, 1);
-  --cambridge-blue: hsla(132, 27%, 63%, 1);
-  --lemon-chiffon: hsla(58, 74%, 85%, 1);
-  --buff: hsla(27, 64%, 65%, 1);
-  --bistre: hsla(10, 31%, 19%, 1);
-  --off-white: hsla(45, 29%, 97%, 1);
-
-  --background-color: var(--off-white);
-  --accent-color: var(--cambridge-blue);
+ --primary-color: hsla(215, 30%, 35%, 1); 
+ --secondary-color: hsla(15, 40%, 60%, 1); 
+ --accent-color: hsla(120, 25%, 45%, 1); 
+ --background-color: hsla(0, 0%, 98%, 1);
+ --text-color: hsla(0, 0%, 20%, 1); 
+ --border-color: var(--primary-color);
   background-color: var(--background-color);
+ font-family: 'Helvetica Neue', Arial, sans-serif;
+ color: var(--text-color);
+}
+
+body {
+ margin: 0;
+ padding: 0;
+ font-size: 1rem;
+ line-height: 1.6;
 }
 
 .wrapper {
-  max-width: min(800px, 100% - 4rem);
-  margin-inline: auto;
+ max-width: 1200px;
+ margin: 2rem auto;
+ padding: 0 2rem;
 }
 
 .wrapper header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 3rem;
+}
+
+h1 {
+ font-size: 2.5rem;
+ font-weight: 600;
+ color: var(--primary-color);
+ margin: 0;
 }
 
 button {
-  font-size: 1.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-
-  border-radius: 5px;
-  border: 2px solid var(--accent-color);
-  color: var(--accent-color);
-  background: var(--background-color);
+ font-size: 1rem;
+ padding: 0.75rem 1.5rem;
+ cursor: pointer;
+ border-radius: 6px;
+ border: 2px solid var(--primary-color);
+ background-color: var(--background-color);
+ color: var(--primary-color);
+ transition: background-color 0.3s ease, color 0.3s ease;
+ font-weight: 500;
 }
-button:focus,
-button:hover {
-  background: var(--accent-color);
-  color: var(--background-color);
+
+button:hover,
+button:focus {
+ background-color: var(--primary-color);
+ color: var(--background-color);
+ outline: none;
 }
 
 .error-message {
-  border: 2px solid var(--buff);
-  padding: 1em;
-  margin: 1em 0;
-  border-radius: 5px;
+ background-color: hsla(0, 85%, 60%, 1);
+ color: var(--background-color);
+ padding: 1rem;
+ margin-bottom: 1.5rem;
+ border-radius: 6px;
+ font-size: 1rem;
+ font-weight: 500;
 }
 
-form input {
-  display: block;
-  margin: .5rem 0 1rem 0;
-  padding: 1rem 0.5rem 0.5rem 0.5rem;
-  border-radius: 5px;
-  border: 2px solid var(--accent-color);
-  font-size: 1rem;
+form input,
+form select {
+ display: block;
+ width: 100%;
+ padding: 0.75rem;
+ margin-bottom: 1.5rem;
+ border: 2px solid var(--border-color);
+ border-radius: 6px;
+ background-color: var(--background-color);
+ font-size: 1rem;
+ color: var(--text-color);
+ transition: border-color 0.3s ease;
+}
+
+form input:focus,
+form select:focus {
+ border-color: var(--primary-color);
+ outline: none;
 }
 
 form label {
-  margin-left: 1rem;
-  display: block;
-  height: 0;
-  width: fit-content;
-  position: relative;
-  z-index: 1;
-}
-form label::before,
-form label::after {
-  content: '';
-  position: absolute;
-  height: 1.65rem;
-  top: -.25rem;
-  left: -5px;
-  width: calc(100% + 10px);
-  border: 2px solid var(--accent-color);
-  border-radius: 5px;
-  background-color: white;
-  z-index: -1;
-}
-
-form button {
-  margin-right: 1rem;
-}
-form button[type=button] {
-  border-color: var(--background-color);
-}
-form button[type=button]:focus,
-form button[type=button]:hover {
-  border-color: var(--accent-color);
+ font-size: 1rem;
+ font-weight: 500;
+ margin-bottom: 0.5rem;
+ display: block;
 }
 
 nav {
-  margin: 0;
-  padding-top: 0.5rem;
-  background-color: var(--accent-color);
+ background-color: var(--primary-color);
+ padding: 1rem 0;
+ border-radius: 6px;
+ margin-bottom: 2rem;
 }
 
 nav ul {
-  list-style: none;
-  display: flex;
-  gap: 2rem;
-  padding: 0;
+ list-style: none;
+ display: flex;
+ gap: 2rem;
+ justify-content: center;
+ padding: 0;
 }
 
 nav a {
-  color: var(--background-color);
-  display: block;
-  --padding: 1rem;
-  padding: var(--padding);
-  text-decoration: none;
-  font-weight: bold;
-  --border-radius: 15px;
-  border-radius: 5px 5px 0 0;
-  position: relative;
-}
-nav a:hover::before,
-nav a:focus::before {
-  content: '';
-  position: absolute;
-  width: var(--border-radius);
-  height: var(--border-radius);
-  border-radius: 0 0 100vw 0;
-  box-shadow: 5px 5px 0 5px var(--background-color);
-  background-color: var(--accent-color);
-  bottom: 0;
-  left: calc(var(--padding) * -1 + 1px);
-}
-nav a:hover::after,
-nav a:focus::after {
-  content: '';
-  position: absolute;
-  width: var(--border-radius);
-  height: var(--border-radius);
-  border-radius: 0 0 0 100vw;
-  box-shadow: -5px 5px 0 5px var(--background-color);
-  background-color: var(--accent-color);
-  bottom: 0;
-  right: calc(var(--padding) * -1 + 1px);
+ color: var(--background-color);
+ text-decoration: none;
+ font-weight: 600;
+ padding: 1rem;
+ border-radius: 6px;
+ transition: background-color 0.3s ease;
 }
 
 nav a:hover,
 nav a:focus {
-  background-color: var(--background-color);
-  color: var(--accent-color);
-  outline: none;
+ background-color: var(--secondary-color);
+ color: var(--primary-color);
+ outline: none;
 }
 
 .person-container {
-  border: 2px solid var(--accent-color);
-  margin: 1rem 0;
-  padding: 2rem;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 5px;
+ border: 1px solid var(--border-color);
+ margin-bottom: 2rem;
+ padding: 2rem;
+ border-radius: 8px;
+ background-color: var(--background-color);
+ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.person-container p,
-.person-container h2 {
-  margin: 0;
-  font-size: 1.5rem;
+.person-container h2,
+.person-container p {
+ margin: 0;
+ font-size: 1.25rem;
+}
+
+.person-container ul {
+ margin-top: 1rem;
+ padding-left: 1.5rem;
+}
+
+.person-container ul li {
+ font-size: 1rem;
+ color: var(--text-color);
+ line-height: 1.5;
+}
+
+.success-popup {
+ background-color: var(--accent-color);
+ color: var(--background-color);
+ padding: 1rem 2rem;
+ border-radius: 8px;
+ position: fixed;
+ top: 20px;
+ right: 20px;
+ z-index: 1000;
+ box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+ transition: opacity 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+ .wrapper {
+   padding: 0 1rem;
+ }
+
+ .wrapper header {
+   flex-direction: column;
+   align-items: flex-start;
+ }
+
+ nav ul {
+   flex-direction: column;
+   gap: 1rem;
+   padding: 0;
+ }
+
+ .person-container {
+   padding: 1.5rem;
+ }
+
+ button {
+   font-size: 1.1rem;
+ }
 }

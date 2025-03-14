@@ -12,6 +12,7 @@ import Navbar from './Components/Navbar';
 import People from './Components/People';
 import Submissions from './Components/Submissions';
 import About from './Components/About';
+import Login from './Account/Login';
 
 function PersonPage() {
   const { name } = useParams();
@@ -40,6 +41,7 @@ function App() {
         <Route path="people/:name" element={<PersonPage />} />
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
+        <Route path="login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
