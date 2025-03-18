@@ -9,6 +9,7 @@ import { BACKEND_URL } from '../../constants';
 const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
+const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 
 function ErrorMessage({ message }) {
   return (
@@ -31,7 +32,6 @@ function AddManuscriptForm({
   setEditingManuscript,
 }) {
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
   const [author_email, setAuthorEmail] = useState('');
   const [text, setText] = useState('');
   const [abstract, setAbstract] = useState('');
@@ -40,7 +40,6 @@ function AddManuscriptForm({
   useEffect(() => {
     if (editingManuscript) {
       setTitle(editingManuscript.title);
-      setAuthor(editingManuscript.author);
       setAuthorEmail(editingManuscript.author_email);
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
@@ -49,7 +48,6 @@ function AddManuscriptForm({
   }, [editingManuscript]);
 
   const changeTitle = (event) => setTitle(event.target.value);
-  const changeAuthor = (event) => setAuthor(event.target.value);
   const changeAuthorEmail = (event) => setAuthorEmail(event.target.value);
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
@@ -58,14 +56,13 @@ function AddManuscriptForm({
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!title || !author || !author_email || !text || !abstract || !editor_email) {
+    if (!title || !author_email || !text || !abstract || !editor_email) {
       setError('All fields are required to add a manuscript.');
       return;
     }
 
     const newManuscript = {
       title: title,
-      author: author,
       author_email: author_email,
       text: text,
       abstract: abstract,
@@ -74,7 +71,6 @@ function AddManuscriptForm({
 
     const resetManuscriptForm = () => {
       setTitle('');
-      setAuthor('');
       setAuthorEmail('');
       setText('');
       setAbstract('');
@@ -121,9 +117,6 @@ function AddManuscriptForm({
       <label htmlFor="title">Title</label>
       <input required type="text" id="title" value={title} onChange={changeTitle} />
 
-      <label htmlFor="author">Author</label>
-      <input required type="text" id="author" value={author} onChange={changeAuthor} />
-
       <label htmlFor="author_email">Author Email</label>
       <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
 
@@ -168,14 +161,18 @@ function Manuscripts() {
   const [addingManuscript, setAddingManuscript] = useState(false);
   const [editingManuscript, setEditingManuscript] = useState(null);
 
-  const deleteManuscript = (title, author, author_email, text, abstract, editor_email) => {
+  const deleteManuscript = (manuscript_to_delete) => {
     axios
-      .delete(`${MANU_READ_ENDPOINT}/delete`, {
-        data: { title, author, author_email, text, abstract, editor_email },
-      })
-      .then(fetchManu)
-      .catch((error) => setError(`There was a problem deleting the manuscript. ${error}`));
+    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
+    .then(() => {
+      fetchManu();
+    })
+    .catch((error) => {
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
+    });
   };
+
 
   const fetchManu = () => {
     axios
@@ -189,6 +186,7 @@ function Manuscripts() {
   };
 
   useEffect(fetchManu, []);
+
 
   return (
     <div className="wrapper">
@@ -227,12 +225,14 @@ function Manuscripts() {
               <button
                 onClick={() =>
                   deleteManuscript(
-                    manuscript.title,
-                    manuscript.author,
-                    manuscript.author_email,
-                    manuscript.text,
-                    manuscript.abstract,
-                    manuscript.editor_email
+                    {
+                    title: manuscript.title,
+                    author: manuscript.author,
+                    author_email: manuscript.author_email,
+                    text: manuscript.text,
+                    abstract: manuscript.abstract,
+                    editor_email: manuscript.editor_email
+                  }
                   )
                 }
               >
