@@ -7,8 +7,12 @@ const PAGES = [
   { label: 'View All People', destination: '/people' },
   { label: 'View All Submissions', destination: '/submissions' },
   { label: 'About', destination: '/about' },
+<<<<<<< HEAD
   { label: 'Login', destination: '/login' },
   {label: 'Register', destination: '/register' },
+=======
+  { label: 'Dashboard', destination: '/dashboard' },
+>>>>>>> ed687af6f39f135d8a751c26bd782c5ebd7e0657
 ];
 
 function NavLink({ page }) {
@@ -32,6 +36,9 @@ function Navbar() {
       <ul className="wrapper">
         {PAGES.map((page) => <NavLink key={page.destination} page={page} />)}
       </ul>
+      <button className="login-button">
+        <Link to="/login">Login</Link>
+      </button>
     </nav>
   );
 }

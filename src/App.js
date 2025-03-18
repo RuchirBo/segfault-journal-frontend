@@ -14,6 +14,7 @@ import Submissions from './Components/Submissions';
 import About from './Components/About';
 import Login from './Account/Login';
 import Register from './Account/Register';
+import Dashboard from './Components/Dashboard';
 
 function PersonPage() {
   const { name } = useParams();
@@ -21,14 +22,39 @@ function PersonPage() {
 }
 
 const homeHeader = "Segfault Journal";
-// const newHomeHeader = "Segfaul Journal";
 
-function Home(){
-  const styles = {
-    'textAlign': 'center',
-  }
-  return <h1 style={styles}> {homeHeader}</h1>
+function Home() {
+  return (
+    <div className="home-container">
+    <h1 className="home-header">{homeHeader}</h1>
+    <p className="home-description">
+      Welcome to the Segfault Journal! This is a collaborative platform where individuals
+      can submit their technical writings, research papers, and insightful articles
+      related to the world of computer science. Whether you are a seasoned professional
+      or a budding enthusiast, this journal is designed to share knowledge and foster
+      a community of learning. Dive into the submissions, browse through various topics,
+      and contribute your own work to our growing archive!
+    </p>
+    <div>
+        <button
+          className="explore-button" 
+          onClick={() => window.location.href = '/people'}
+        >
+          Explore People & Contributors
+        </button>
+
+        <button
+          className="submit-button" 
+          onClick={() => window.location.href = '/submissions'}
+        >
+          Submit Your Work
+        </button>
+
+        </div>
+      </div>
+  );
 }
+
 
 function App() {
   return (
@@ -43,7 +69,11 @@ function App() {
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
+<<<<<<< HEAD
         <Route path="register" element={<Register />} />
+=======
+        <Route path="dashboard" element={<Dashboard />} />
+>>>>>>> ed687af6f39f135d8a751c26bd782c5ebd7e0657
       </Routes>
     </BrowserRouter>
   );
