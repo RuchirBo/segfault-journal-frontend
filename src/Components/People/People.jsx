@@ -112,7 +112,7 @@ ErrorMessage.propTypes = {
 
 const peopleHeader = "View All People";
 
-function Person({ person, fetchPeople, setError, roleMap }) {
+function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
   const { name, email, roles, affiliation } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
