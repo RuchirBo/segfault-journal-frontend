@@ -1,0 +1,79 @@
+.manuscript-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .manuscript-table th, .manuscript-table td {
+    padding: 18px 25px; 
+    text-align: left;
+  }
+  
+  .manuscript-table th {
+    background-color: #6b5b95;
+    color: white;
+    font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .manuscript-table td {
+    background-color: #f9f9f9; 
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+  }
+  
+  .manuscript-table tr {
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background-color: white; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .manuscript-table tr:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .manuscript-table td a {
+    padding: 8px 12px;
+    background-color: #6b5b95;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    display: inline-block;
+  }
+  
+  .manuscript-table td a:hover {
+    background-color: #563d7c;
+  }
+  
+  .manuscript-table td button {
+    padding: 8px 12px;
+    background-color: #6b5b95;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .manuscript-table td button:hover {
+    background-color: #563d7c;
+  }
+  
+  .error-message {
+    background-color: #ffdddd;
+    color: #d8000c;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  

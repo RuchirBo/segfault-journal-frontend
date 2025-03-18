@@ -69,11 +69,7 @@ function App() {
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
-<<<<<<< HEAD
-        <Route path="register" element={<Register />} />
-=======
         <Route path="dashboard" element={<Dashboard />} />
->>>>>>> ed687af6f39f135d8a751c26bd782c5ebd7e0657
       </Routes>
     </BrowserRouter>
   );
