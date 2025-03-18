@@ -13,6 +13,7 @@ import People from './Components/People';
 import Submissions from './Components/Submissions';
 import About from './Components/About';
 import Login from './Account/Login';
+import Dashboard from './Components/Dashboard';
 
 function PersonPage() {
   const { name } = useParams();
@@ -42,6 +43,7 @@ function App() {
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

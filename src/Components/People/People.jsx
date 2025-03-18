@@ -252,6 +252,18 @@ function peopleObjectToArray(Data) {
   return people;
 }
 
+function groupPeopleByRole(people) {
+  return people.reduce((grouped, person) => {
+    person.roles.forEach(role => {
+      if (!grouped[role]) {
+        grouped[role] = [];
+      }
+      grouped[role].push(person);
+    });
+    return grouped;
+  }, {});
+}
+
 function People() {
   const [error, setError] = useState('');
   const [people, setPeople] = useState([]);
@@ -276,6 +288,8 @@ function People() {
 
   useEffect(fetchPeople, []);
   useEffect(getRoles,[]);
+
+  const groupedPeople = groupPeopleByRole(people);
 
   return (
     <div className="wrapper">
@@ -304,18 +318,22 @@ function People() {
       )}
       
       {error && <ErrorMessage message={error} />}
-      {
-        people.map((person) => 
-          <Person 
-            key={person.email} 
-            person={person} 
-            fetchPeople={fetchPeople} 
-            setError={setError}
-            roleMap={roleMap}
-            setSuccessMessage={setSuccessMessage} 
-          />
-        )
-      }
+
+      {Object.keys(groupedPeople).map(role => (
+        <div key={role}>
+          <h2>{roleMap[role]}</h2>
+          {groupedPeople[role].map(person => (
+            <Person
+              key={person.email}
+              person={person}
+              fetchPeople={fetchPeople}
+              setError={setError}
+              roleMap={roleMap}
+              setSuccessMessage={setSuccessMessage}
+            />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
