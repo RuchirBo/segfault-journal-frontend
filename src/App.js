@@ -13,6 +13,7 @@ import People from './Components/People';
 import Submissions from './Components/Submissions';
 import About from './Components/About';
 import Login from './Account/Login';
+import Register from './Account/Register';
 
 function PersonPage() {
   const { name } = useParams();
@@ -34,7 +35,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        {/* For a different home page, do:
+        {/* For a different home page, we can do:
          <Route index element={<Login />} /> */}
         <Route index element={<Home />} />
         <Route path="people" element={<People />} />
@@ -42,6 +43,7 @@ function App() {
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );

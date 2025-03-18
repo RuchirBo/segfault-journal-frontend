@@ -1,38 +1,41 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 
-function Login() {
-  const [username, setUsername] = useState('');
+function Register() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [roleKey, setRoleKey] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleLogin = async (event) => {
+
+  const navigate = useNavigate();
+
+  const handleRegister = async (event) => {
     event.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/login', {
+      const response = await fetch('http://127.0.0.1:8000/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: username,
-          password: password,
+          email,
+          password,
+          role,
           role_key: roleKey
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
-        setSuccessMsg(data.message || 'Logged in successfully!');
+        setSuccessMsg(data.message || 'Registered successfully!');
       } else {
         const errorData = await response.json();
-        console.error('Login error:', errorData);
-        setErrorMsg(errorData.message || 'Error logging in');
+        setErrorMsg(errorData.message || 'Registration error');
       }
     } catch (error) {
       console.error('Network or server error:', error);
@@ -42,19 +45,19 @@ function Login() {
 
   return (
     <div className="wrapper">
-      <h1>Segfault Journals</h1>
+      <h1>Register for Segfault Journals</h1>
 
       {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
       {successMsg && <p style={{ color: 'green' }}>{successMsg}</p>}
 
-      <form onSubmit={handleLogin}>
-        <label htmlFor="username">Username (email)</label>
+      <form onSubmit={handleRegister}>
+        <label htmlFor="email">Email</label>
         <input
           type="text"
-          id="username"
+          id="email"
           placeholder="Enter email"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
@@ -68,26 +71,33 @@ function Login() {
           required
         />
 
-        <label htmlFor="roleKey">Role Key (if required)</label>
+        <label htmlFor="role">Role (optional)</label>
+        <input
+          type="text"
+          id="role"
+          placeholder="e.g. 'dev', 'EDITOR', 'AUTHOR'"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        />
+
+        <label htmlFor="roleKey">Role Key (optional)</label>
         <input
           type="text"
           id="roleKey"
-          placeholder="Enter role key"
+          placeholder="Enter role key if needed"
           value={roleKey}
           onChange={(e) => setRoleKey(e.target.value)}
         />
 
-        <button type="submit">Log in</button>
+        <button type="submit">Register</button>
       </form>
 
       <div className="auth-links">
-        <p>Forgot your password?</p>
-        <Link to="/reset-password">Reset password</Link>
-        <p>No account?</p>
-        <Link to="/register">Create an account</Link>
+        <p>Already have an account?</p>
+        <Link to="/login">Log in</Link>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default Register;
