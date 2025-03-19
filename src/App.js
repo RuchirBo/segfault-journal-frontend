@@ -13,7 +13,7 @@ import People from './Components/People';
 import Submissions from './Components/Submissions';
 import About from './Components/About';
 import Login from './Account/Login';
-import Register from './Account/Register';
+// import Register from './Account/Register';
 import Dashboard from './Components/Dashboard';
 
 function PersonPage() {
