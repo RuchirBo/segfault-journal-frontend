@@ -9,6 +9,8 @@ import { BACKEND_URL } from '../../constants';
 const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 //const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 
+const manuscriptsHeader = "View All Manuscripts";
+
 function ErrorMessage({ message }) {
   return (
     <div className="error-message">
@@ -41,7 +43,7 @@ function Manuscripts() {
   return (
     <div className="wrapper">
       <header>
-        <h1>View All Manuscripts</h1>
+        <h1>{manuscriptsHeader}</h1>
       </header>
 
       {error && <ErrorMessage message={error} />}
@@ -55,6 +57,7 @@ function Manuscripts() {
             <th>Text</th>
             <th>Abstract</th>
             <th>Editor Email</th>
+            <th>State</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -68,6 +71,7 @@ function Manuscripts() {
                 <td>{manuscript.text}</td>
                 <td>{manuscript.abstract}</td>
                 <td>{manuscript.editor_email}</td>
+                <td>{manuscript.state}</td>
                 <td>
                   <Link to={`/manuscript/${manuscript.id}`}>View</Link>
                 </td>
@@ -83,3 +87,5 @@ function Manuscripts() {
 }
 
 export default Manuscripts;
+export {manuscriptsHeader};
+
