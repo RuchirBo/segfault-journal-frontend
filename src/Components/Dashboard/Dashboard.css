@@ -77,3 +77,26 @@
     margin-bottom: 15px;
   }
   
+  .state-container {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .state-description {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  
+  .state-container:hover .state-description {
+    visibility: visible;
+  }
+  

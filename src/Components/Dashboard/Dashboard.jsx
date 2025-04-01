@@ -71,7 +71,10 @@ function Manuscripts() {
                 <td>{manuscript.text}</td>
                 <td>{manuscript.abstract}</td>
                 <td>{manuscript.editor_email}</td>
-                <td>{manuscript.state}</td>
+                <td className="state-container">
+                  <td className="state">{manuscript.state}</td>
+                  <div className="state-description">{manuscript.state_description}</div>
+                </td>
                 <td>
                   <Link to={`/manuscript/${manuscript.id}`}>View</Link>
                 </td>
