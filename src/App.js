@@ -58,6 +58,9 @@ function Home() {
 
 
 function App() {
+  //this is for the masthead, we only want certain people to show up, this is the role code
+  const allowedRoles = ['ED', 'CE', 'ME'];
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -67,7 +70,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="people" element={<People />} />
         <Route path="people/:name" element={<PersonPage />} />
-        <Route path="masthead" element={<Masthead />} />
+        <Route path="masthead" element={<Masthead allowedRoles={allowedRoles} />} />
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
