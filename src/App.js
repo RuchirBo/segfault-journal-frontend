@@ -10,6 +10,7 @@ import './App.css';
 
 import Navbar from './Components/Navbar';
 import People from './Components/People';
+import Masthead from './Components/Masthead';
 import Submissions from './Components/Submissions';
 import About from './Components/About';
 import Login from './Account/Login';
@@ -66,6 +67,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="people" element={<People />} />
         <Route path="people/:name" element={<PersonPage />} />
+        <Route path="masthead" element={<Masthead />} />
         <Route path="submissions" element={<Submissions />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
