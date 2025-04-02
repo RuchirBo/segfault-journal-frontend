@@ -40,4 +40,31 @@ const mockRoles = {
       });
     });
 
+
+  test('displays error message when API call fails', async () => {
+    axios.get.mockRejectedValue(new Error('Network Error'));
+
+    render(<Masthead allowedRoles={['editor', 'reviewer']} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/There was a problem retrieving the list of people/)).toBeInTheDocument();
+    });
+  });
+
+  
+  test('only displays people with allowed roles', async () => {
+    axios.get.mockImplementation((url) => {
+      if (url === `${BACKEND_URL}/people`) return Promise.resolve({ data: mockPeople });
+      if (url === `${BACKEND_URL}/roles`) return Promise.resolve({ data: mockRoles });
+      return Promise.reject(new Error('Unexpected API call'));
+    });
+
+    render(<Masthead allowedRoles={['editor']} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice')).toBeInTheDocument();
+      expect(screen.queryByText('Bob')).not.toBeInTheDocument();
+    });
+  });
+
   });
