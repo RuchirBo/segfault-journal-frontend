@@ -29,6 +29,9 @@ function Login() {
         const data = await response.json();
         console.log('Login successful:', data);
         setSuccessMsg(data.message || 'Logged in successfully!');
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
       } else {
         const errorData = await response.json();
         console.error('Login error:', errorData);
