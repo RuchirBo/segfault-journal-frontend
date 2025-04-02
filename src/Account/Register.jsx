@@ -33,6 +33,7 @@ function Register() {
       if (response.ok) {
         const data = await response.json();
         setSuccessMsg(data.message || 'Registered successfully!');
+        navigate('/home')
       } else {
         const errorData = await response.json();
         setErrorMsg(errorData.message || 'Registration error');

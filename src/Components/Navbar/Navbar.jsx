@@ -9,6 +9,9 @@ const PAGES = [
   { label: 'View All Submissions', destination: '/submissions' },
   { label: 'About', destination: '/about' },
   { label: 'Dashboard', destination: '/dashboard' },
+  { label: 'Login', destination: '/login' },
+  { label: 'Register', destination: '/register' },
+  { label: 'Profile', destination: '/profile' },
 ];
 
 function NavLink({ page }) {
@@ -32,9 +35,6 @@ function Navbar() {
       <ul className="wrapper">
         {PAGES.map((page) => <NavLink key={page.destination} page={page} />)}
       </ul>
-      <button className="login-button">
-        <Link to="/login">Login</Link>
-      </button>
     </nav>
   );
 }
