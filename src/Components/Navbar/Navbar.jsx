@@ -9,8 +9,6 @@ const PAGES = [
   { label: 'View All Submissions', destination: '/submissions' },
   { label: 'About', destination: '/about' },
   { label: 'Dashboard', destination: '/dashboard' },
-  { label: 'Login', destination: '/login' },
-  { label: 'Register', destination: '/register' },
   { label: 'Profile', destination: '/profile' },
 ];
 

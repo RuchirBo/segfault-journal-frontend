@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from './logo.svg';
 import {
   BrowserRouter,
   Routes,
@@ -64,6 +65,24 @@ function App() {
 
   return (
     <BrowserRouter>
+          <div className="auth-buttons-container">
+          <div className="logo-and-slogan">
+          <img src={logo} alt="Segfault Journal Logo" className="logo" />
+          <span className="slogan">Welcome to the Segfault Journal</span>
+        </div>
+            <button
+              className="auth-button"
+              onClick={() => window.location.href = '/login'}
+            >
+              Login
+            </button>
+            <button
+              className="auth-button"
+              onClick={() => window.location.href = '/register'}
+            >
+              Register
+            </button>
+          </div>
       <Navbar />
       <Routes>
         {/* For a different home page, we can do:

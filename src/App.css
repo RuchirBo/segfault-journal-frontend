@@ -276,3 +276,63 @@ nav a:focus {
   cursor: not-allowed;
 }
 
+.auth-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f1f1f1; 
+  position: relative;
+}
+
+.auth-button {
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  margin-left: 0px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 2px solid var(--primary-color); 
+  background-color: var(--background-color); 
+  color: var(--primary-color); 
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.auth-button:hover,
+.auth-button:focus {
+  background-color: var(--primary-color); 
+  color: var(--background-color);
+  border-color: var(--primary-color); 
+  outline: none; 
+}
+
+.auth-button:active {
+  background-color: var(--secondary-color); 
+  color: var(--background-color); 
+  border-color: var(--secondary-color);
+}
+
+.auth-button:disabled {
+  background-color: #f0f0f0;
+  color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+.logo-and-slogan {
+  display: flex;
+  align-items: center; 
+  margin-right: 20px;
+}
+
+.logo {
+  height: 50px; 
+  margin-right: 10px; 
+}
+
+.slogan {
+  font-size: 18px;
+  font-style: italic;
+  color: #333; 
+}
+
+
