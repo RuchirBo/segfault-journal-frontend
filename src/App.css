@@ -132,17 +132,16 @@ nav a:focus {
   outline: none;
 }
 
-.login-button {
-  position: absolute;  
-  top: 10px;
-  right: 10px; 
-  padding: 0.75rem 1.5rem;
+.login-button {  
+  top: 0px;
+  right: 0px; 
+  padding: 0.0rem 0rem;
   background-color: var(--primary-color);
   color: var(--background-color);
-  border: 2px solid var(--primary-color);
-  border-radius: 6px;
+  border: 0px solid var(--primary-color);
+  border-radius: 0px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -155,7 +154,6 @@ nav a:focus {
   background-color: var(--secondary-color);
   color: var(--primary-color);
 }
-
 
 
 .person-container {
@@ -278,25 +276,26 @@ nav a:focus {
 
 .auth-buttons-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #f1f1f1; 
-  position: relative;
+  justify-content: center;
+  gap: 1rem; 
+  margin-top: 1rem;
+  flex-wrap: wrap; 
 }
 
 .auth-button {
   font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  margin-left: 0px;
+  padding: 0.5rem 1rem; /* Add some internal spacing */
+  margin: 0; /* Let gap in flexbox handle spacing */
   cursor: pointer;
-  border-radius: 6px;
-  border: 2px solid var(--primary-color); 
+  border-radius: 5px;
+  border: 1px solid var(--primary-color); 
   background-color: var(--background-color); 
   color: var(--primary-color); 
   font-weight: 500;
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
 
 .auth-button:hover,
 .auth-button:focus {
