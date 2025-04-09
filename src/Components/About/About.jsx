@@ -4,26 +4,27 @@ import { BACKEND_URL } from '../../constants';
 
 const TEXT_READ_ENDPOINT = `${BACKEND_URL}/text`;
 
-function fetchTextData(sectionKey) {
+function fetchTextData(key) {
     return axios
-        .get(`${TEXT_READ_ENDPOINT}/${sectionKey}`)
+        .get(`${TEXT_READ_ENDPOINT}/${key}/`)
         .then(({ data }) => data || null)  
         .catch((error) => {
-            throw new Error(`There was a problem retrieving the text for ${sectionKey}. ${error.message}`);
+            const errorMessage = error.response?.data?.message || error.message;
+            throw new Error(`There was a problem retrieving the text for ${key}. ${errorMessage}`);
         });
 }
 
-function updateText(sectionKey, newTitle, newText) {
+function updateText(key, newTitle, newText) {
     return axios
-        .put(`${TEXT_READ_ENDPOINT}/${sectionKey}/update`, { 
+        .put(`${TEXT_READ_ENDPOINT}/${key}/update`, { 
             title: newTitle, 
             text: newText 
         })
         .then(() => {
-            alert(`Successfully updated ${sectionKey}`);
+            alert(`Successfully updated ${key}`);
         })
         .catch((error) => {
-            alert(`Failed to update ${sectionKey}: ${error.message}`);
+            alert(`Failed to update ${key}: ${error.message}`);
         });
 }
 
@@ -32,7 +33,7 @@ function About() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetchTextData()
+        fetchTextData("SubmissionsPage")
             .then((data) => {
                 if (data) {
                     setAboutText(data);
@@ -60,7 +61,7 @@ function About() {
             <button type="button" onClick={() => alert('Implement Add Text functionality')}>
                 Add Text
             </button>
-            <button onClick={() => updateText('HomePage', aboutText?.title, aboutText?.text)}>
+            <button onClick={() => updateText("SubmissionsPage", 'NewTitle', 'FakeText')}>
             Update About
             </button>
         </div>
