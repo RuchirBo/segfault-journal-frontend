@@ -11,6 +11,65 @@ const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 
+const availableActionsMap = {
+  SUB: ["ASSIGN_REF", "REJECT", "WITHDRAW"],
+  REV: ["ACCEPT", "ACCEPT_WITH_REV", "SUBMIT_REV", "DELETE_REF", "ASSIGN_REF", "REJECT", "WITHDRAW"],
+  CED: ["DONE", "WITHDRAW"],
+  AUREVIEW: ["DONE", "WITHDRAW"],
+  FORM: ["DONE", "WITHDRAW"],
+  AUTHREVISION: ["DONE", "WITHDRAW"],
+  EDREV: ["ACCEPT", "WITHDRAW"],
+  PUB: [],
+  REJ: [],
+  WITHDRAWN: [],
+};
+const getAvailableActions = (state) => availableActionsMap[state] || [];
+
+function UpdateActionButton({ manuscript, refreshManu, setError }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedAction, setSelectedAction] = useState("");
+  const actions = getAvailableActions(manuscript.state);
+
+  const handleActionSelect = (event) => {
+    const action = event.target.value;
+    setSelectedAction(action);
+    if (action) {
+      axios
+        .put(MANU_UPDATE_ENDPOINT, { manuscript_id: manuscript.id, action })
+        .then(() => {
+          refreshManu();
+          setShowDropdown(false);
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message;
+          setError(`Could not update action: ${errorMessage}`);
+        });
+    }
+  };
+
+  return (
+    <div className="update-action-button" style={{ display: "inline-block", marginRight: "10px" }}>
+      <button onClick={() => setShowDropdown(!showDropdown)}>Update Action</button>
+      {showDropdown && (
+        <select onChange={handleActionSelect} value={selectedAction}>
+          <option value="">Select Action</option>
+          {actions.map((action) => (
+            <option key={action} value={action}>
+              {action}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+}
+
+UpdateActionButton.propTypes = {
+  manuscript: propTypes.object.isRequired,
+  refreshManu: propTypes.func.isRequired,
+  setError: propTypes.func.isRequired,
+};  
+
 function ErrorMessage({ message }) {
   return (
     <div className="error-message">
@@ -195,6 +254,7 @@ function Manuscripts() {
   useEffect(fetchManu, []);
 
 
+
   return (
     <div className="wrapper">
       <header>
@@ -217,7 +277,8 @@ function Manuscripts() {
       />
 
       <div className="manuscript-list">
-        {manuscripts.length > 0 ? (
+      {
+        manuscripts.length > 0 ? (
           manuscripts.map((manuscript) => (
             <div key={manuscript.id} className="manuscript-item">
               <h3>{manuscript.title}</h3>
@@ -226,30 +287,40 @@ function Manuscripts() {
               <p><strong>Text:</strong> {manuscript.text}</p>
               <p><strong>Abstract:</strong> {manuscript.abstract}</p>
               <p><strong>Editor Email:</strong> {manuscript.editor_email}</p>
+              <p><strong>State:</strong> {manuscript.state}</p>
+              {manuscript.state_description && (
+                <p><strong>State Description:</strong> {manuscript.state_description}</p>
+              )}
               <Link to={`/manuscript/${manuscript.id}`}>View Details</Link>
               <br /><br />
-              <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
-              <button
-                onClick={() =>
-                  deleteManuscript(
-                    {
-                    title: manuscript.title,
-                    author: manuscript.author,
-                    author_email: manuscript.author_email,
-                    text: manuscript.text,
-                    abstract: manuscript.abstract,
-                    editor_email: manuscript.editor_email
+              <div className="action-buttons">
+                <UpdateActionButton
+                  manuscript={manuscript}
+                  refreshManu={fetchManu}
+                  setError={setError}
+                />
+                <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
+                <button
+                  onClick={() =>
+                    deleteManuscript({
+                      title: manuscript.title,
+                      author: manuscript.author,
+                      author_email: manuscript.author_email,
+                      text: manuscript.text,
+                      abstract: manuscript.abstract,
+                      editor_email: manuscript.editor_email,
+                    })
                   }
-                  )
-                }
-              >
-                Delete Manuscript
-              </button>
+                >
+                  Delete Manuscript
+                </button>
+              </div>
             </div>
           ))
         ) : (
           <p>No manuscripts found.</p>
-        )}
+        )
+      }
       </div>
     </div>
   );
