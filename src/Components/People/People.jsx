@@ -270,6 +270,7 @@ function People() {
   const [addingPerson, setAddingPerson] = useState(false);
   const [roleMap, setRoleMap] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchPeople = () => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -289,16 +290,31 @@ function People() {
   useEffect(fetchPeople, []);
   useEffect(getRoles,[]);
 
-  const groupedPeople = groupPeopleByRole(people);
+  const filteredPeople = people.filter((person) => {
+    const search = searchQuery.toLowerCase();
+    return (
+      person.name.toLowerCase().includes(search) ||
+      person.email.toLowerCase().includes(search)||
+      person.affiliation.toLowerCase().includes(search) ||
+      person.roles.some(role => role.toLowerCase().includes(search))
+    );
+  });
+
+  const groupedPeople = groupPeopleByRole(filteredPeople);
 
   return (
     <div className="wrapper">
       <header>
-        <h1>
-          {peopleHeader}
-        </h1>
+        <h1> {peopleHeader}</h1>
+        <input 
+          type="text"
+          placeholder='Search by name, email, affiliation, or role...'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style = {{margin: "10px 0", width: "100%", padding: "8px"}}
+        />
         <button type="button" onClick={showAddPersonForm}>
-          Add a Person
+          Add a person
         </button>
       </header>
       

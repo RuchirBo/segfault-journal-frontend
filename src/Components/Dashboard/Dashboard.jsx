@@ -26,6 +26,7 @@ ErrorMessage.propTypes = {
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchManu = () => {
     axios
@@ -44,6 +45,13 @@ function Manuscripts() {
     <div className="wrapper">
       <header>
         <h1>{manuscriptsHeader}</h1>
+        <input
+          type="text"
+          placeholder="Search by author email, text, abstract, editor email, or state..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ margin: "10px 0", width: "100%", padding: "8px" }}
+        />
       </header>
 
       {error && <ErrorMessage message={error} />}
@@ -62,26 +70,52 @@ function Manuscripts() {
           </tr>
         </thead>
         <tbody>
-          {manuscripts.length > 0 ? (
-            manuscripts.map((manuscript) => (
-              <tr key={manuscript.id}>
-                <td>{manuscript.title}</td>
-                <td>{manuscript.author}</td>
-                <td>{manuscript.author_email}</td>
-                <td>{manuscript.text}</td>
-                <td>{manuscript.abstract}</td>
-                <td>{manuscript.editor_email}</td>
-                <td className="state-container">
-                  <td className="state">{manuscript.state}</td>
-                  <div className="state-description">{manuscript.state_description}</div>
-                </td>
-                <td>
-                  <Link to={`/manuscript/${manuscript.id}`}>View</Link>
-                </td>
-              </tr>
-            ))
+          {manuscripts.filter((manuscript) => {
+            const search = searchQuery.toLowerCase();
+            return (
+              manuscript.title.toLowerCase().includes(search) ||
+              manuscript.author.toLowerCase().includes(search) ||
+              manuscript.author_email.toLowerCase().includes(search) ||
+              manuscript.text.toLowerCase().includes(search) ||
+              manuscript.abstract.toLowerCase().includes(search) ||
+              manuscript.editor_email.toLowerCase().includes(search) ||
+              manuscript.state.toLowerCase().includes(search)
+            );
+          }).length > 0 ? (
+            manuscripts
+              .filter((manuscript) => {
+                const search = searchQuery.toLowerCase();
+                return (
+                  manuscript.title.toLowerCase().includes(search) ||
+                  manuscript.author.toLowerCase().includes(search) ||
+                  manuscript.author_email.toLowerCase().includes(search) ||
+                  manuscript.text.toLowerCase().includes(search) ||
+                  manuscript.abstract.toLowerCase().includes(search) ||
+                  manuscript.editor_email.toLowerCase().includes(search) ||
+                  manuscript.state.toLowerCase().includes(search)
+                );
+              })
+              .map((manuscript) => (
+                <tr key={manuscript.id}>
+                  <td>{manuscript.title}</td>
+                  <td>{manuscript.author}</td>
+                  <td>{manuscript.author_email}</td>
+                  <td>{manuscript.text}</td>
+                  <td>{manuscript.abstract}</td>
+                  <td>{manuscript.editor_email}</td>
+                  <td className="state-container">
+                    <div className="state">{manuscript.state}</div>
+                    <div className="state-description">{manuscript.state_description}</div>
+                  </td>
+                  <td>
+                    <Link to={`/manuscript/${manuscript.id}`}>View</Link>
+                  </td>
+                </tr>
+              ))
           ) : (
-            <p>No manuscripts found.</p>
+            <tr>
+              <td colSpan="8">No manuscripts found.</td>
+            </tr>
           )}
         </tbody>
       </table>
@@ -90,5 +124,4 @@ function Manuscripts() {
 }
 
 export default Manuscripts;
-export {manuscriptsHeader};
-
+export { manuscriptsHeader };
