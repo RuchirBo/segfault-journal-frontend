@@ -29,6 +29,7 @@ describe('Submissions Component', () => {
     expect(screen.getByText('Text')).toBeInTheDocument();
     expect(screen.getByText('Abstract')).toBeInTheDocument();
     expect(screen.getByText('Editor')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Manuscript ID/i)).toBeInTheDocument();
   })
   
   it('displays manuscripts from backend', async () => {
@@ -57,6 +58,81 @@ describe('Submissions Component', () => {
   })
   ;
 
-  // add tests for after manuscript is submitted 
+  //tests for after a manuscript is submitted
+  it('submits a new manuscript with unique manuscript ID', async () => {
+    axios.get.mockRejectedValueOnce({ response: { status: 404 } }); // ID check returns not found
+    axios.put.mockResolvedValueOnce({}); // submission succeeds
 
+    render(<BrowserRouter><Submissions /></BrowserRouter>);
+
+    fireEvent.click(screen.getByText(/Add Manuscript/i));
+
+    fireEvent.change(screen.getByLabelText(/Manuscript ID/i), {
+      target: { value: 'MANU001' },
+    });
+    fireEvent.change(screen.getByLabelText(/Title/i), {
+      target: { value: 'Unique Manuscript' },
+    });
+    fireEvent.change(screen.getByLabelText(/Author Email/i), {
+      target: { value: 'author@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/Text/i), {
+      target: { value: 'This is the manuscript body.' },
+    });
+    fireEvent.change(screen.getByLabelText(/Abstract/i), {
+      target: { value: 'A brilliant summary.' },
+    });
+    fireEvent.change(screen.getByLabelText(/Editor/i), {
+      target: { value: 'editor@example.com' },
+    });
+
+    fireEvent.click(screen.getByText(/Submit/i));
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining('/manuscripts/MANU001')
+      );
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining('/manuscripts/create'),
+        expect.objectContaining({
+          manuscript_id: 'MANU001',
+          title: 'Unique Manuscript',
+        })
+      );
+    });
+  });
+
+  it('prevents submission if manuscript ID is not unique', async () => {
+    axios.get.mockResolvedValueOnce({ data: { manuscript_id: 'MANU001' } });
+
+    render(<BrowserRouter><Submissions /></BrowserRouter>);
+
+    fireEvent.click(screen.getByText(/Add Manuscript/i));
+
+    fireEvent.change(screen.getByLabelText(/Manuscript ID/i), {
+      target: { value: 'MANU001' },
+    });
+    fireEvent.change(screen.getByLabelText(/Title/i), {
+      target: { value: 'Duplicate Manuscript' },
+    });
+    fireEvent.change(screen.getByLabelText(/Author Email/i), {
+      target: { value: 'author@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/Text/i), {
+      target: { value: 'Text of the duplicate manuscript.' },
+    });
+    fireEvent.change(screen.getByLabelText(/Abstract/i), {
+      target: { value: 'Duplicate abstract.' },
+    });
+    fireEvent.change(screen.getByLabelText(/Editor/i), {
+      target: { value: 'editor@example.com' },
+    });
+
+    fireEvent.click(screen.getByText(/Submit/i));
+
+    await waitFor(() => {
+      expect(axios.put).not.toHaveBeenCalled();
+      expect(screen.getByText(/already exists/)).toBeInTheDocument();
+    });
+  });
 })
