@@ -36,6 +36,7 @@ function AddManuscriptForm({
   const [text, setText] = useState('');
   const [abstract, setAbstract] = useState('');
   const [editor_email, setEditorEmail] = useState('');  
+  const [manuscriptId, setManuscriptId] = useState('');
 
   useEffect(() => {
     if (editingManuscript) {
@@ -44,6 +45,7 @@ function AddManuscriptForm({
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
       setEditorEmail(editingManuscript.editor_email);
+      setManuscriptId(editingManuscript.manuscript_id);
     }
   }, [editingManuscript]);
 
@@ -52,11 +54,12 @@ function AddManuscriptForm({
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
   const changeEditorEmail = (event) => setEditorEmail(event.target.value);
+  const changeManuscriptId = (e) => setManuscriptId(e.target.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!title || !author_email || !text || !abstract || !editor_email) {
+    if (!title || !author_email || !text || !abstract || !editor_email || !manuscriptId) {
       setError('All fields are required to add a manuscript.');
       return;
     }
@@ -67,6 +70,7 @@ function AddManuscriptForm({
       text: text,
       abstract: abstract,
       editor_email: editor_email,
+      manuscript_id: manuscriptId,
     }
 
     const resetManuscriptForm = () => {
@@ -75,6 +79,7 @@ function AddManuscriptForm({
       setText('');
       setAbstract('');
       setEditorEmail('');
+      setManuscriptId('');
     };
 
     if (editingManuscript) {
@@ -135,6 +140,8 @@ function AddManuscriptForm({
 
       <label htmlFor="editor">Editor</label>
       <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
+      <label htmlFor="manuscript_id">Manuscript ID</label>
+      <input required type="text" id="manuscript_id" value={manuscriptId} onChange={changeManuscriptId} />
 
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={handleSubmit}>
