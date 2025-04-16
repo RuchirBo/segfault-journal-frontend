@@ -94,7 +94,7 @@ UpdateActionButton.propTypes = {
   setError: propTypes.func.isRequired,
 };
 
-function AddManuscriptForm({
+function EditManuscriptForm({
   visible,
   cancel,
   fetchManu,
@@ -222,7 +222,7 @@ function AddManuscriptForm({
   );
 }
 
-AddManuscriptForm.propTypes = {
+EditManuscriptForm.propTypes = {
   visible: propTypes.bool.isRequired,
   cancel: propTypes.func.isRequired,
   fetchManu: propTypes.func.isRequired,
@@ -341,7 +341,7 @@ function Manuscripts() {
                   <td> 
                     <button onClick={() => setEditingManuscript(true)}>Edit Manuscript</button>
 
-                      <AddManuscriptForm
+                      <EditManuscriptForm
                         visible={editingManuscript !== null}
                         cancel={() => {
                           setEditingManuscript(null);
@@ -351,7 +351,7 @@ function Manuscripts() {
                         editingManuscript={editingManuscript}
                         setEditingManuscript={setEditingManuscript}
                       />
-                    <AddManuscriptForm
+                    <EditManuscriptForm
                         visible={editingManuscript !== null}
                         cancel={() => {
                           setEditingManuscript(null);
