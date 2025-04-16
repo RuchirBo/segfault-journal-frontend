@@ -7,13 +7,9 @@ import './Dashboard.css';
 import { BACKEND_URL } from '../../constants';
 
 const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
-<<<<<<< HEAD
+const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 
-//const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
-=======
-const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
->>>>>>> e07dfa6c42d04b42858badfca223bcf1d4da3e22
 
 const manuscriptsHeader = "View All Manuscripts";
 
