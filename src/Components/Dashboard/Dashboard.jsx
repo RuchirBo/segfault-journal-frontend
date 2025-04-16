@@ -8,6 +8,8 @@ import { BACKEND_URL } from '../../constants';
 
 const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
+const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
+const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 
 
@@ -92,11 +94,149 @@ UpdateActionButton.propTypes = {
   setError: propTypes.func.isRequired,
 };
 
+function AddManuscriptForm({
+  visible,
+  cancel,
+  fetchManu,
+  setError,
+  editingManuscript,
+  setEditingManuscript,
+}) {
+  const [title, setTitle] = useState('');
+  const [author_email, setAuthorEmail] = useState('');
+  const [text, setText] = useState('');
+  const [abstract, setAbstract] = useState('');
+  const [editor_email, setEditorEmail] = useState('');  
+  const [manuscriptId, setManuscriptId] = useState('');
+
+  useEffect(() => {
+    if (editingManuscript) {
+      setTitle(editingManuscript.title);
+      setAuthorEmail(editingManuscript.author_email);
+      setText(editingManuscript.text);
+      setAbstract(editingManuscript.abstract);
+      setEditorEmail(editingManuscript.editor_email);
+      setManuscriptId(editingManuscript.manuscript_id);
+    }
+  }, [editingManuscript]);
+
+  const changeTitle = (event) => setTitle(event.target.value);
+  const changeAuthorEmail = (event) => setAuthorEmail(event.target.value);
+  const changeText = (event) => setText(event.target.value);
+  const changeAbstract = (event) => setAbstract(event.target.value);
+  const changeEditorEmail = (event) => setEditorEmail(event.target.value);
+  const changeManuscriptId = (e) => setManuscriptId(e.target.value);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!title || !author_email || !text || !abstract || !editor_email || !manuscriptId) {
+      setError('All fields are required to add a manuscript.');
+      return;
+    }
+
+    const newManuscript = {
+      title: title,
+      author_email: author_email,
+      text: text,
+      abstract: abstract,
+      editor_email: editor_email,
+      manuscript_id: manuscriptId,
+    }
+
+    const resetManuscriptForm = () => {
+      setTitle('');
+      setAuthorEmail('');
+      setText('');
+      setAbstract('');
+      setEditorEmail('');
+      setManuscriptId('');
+    };
+
+    if (editingManuscript) {
+      updateManuscript(editingManuscript, newManuscript);
+    } else {
+      axios
+        .put(MANU_CREATE_ENDPOINT, newManuscript)
+        .then(() => {
+          fetchManu(); 
+          resetManuscriptForm();
+          window.location.reload();
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message;
+          setError(`There was a problem adding the manuscript. ${errorMessage}`);
+        });
+    }
+    setEditingManuscript(null);
+  };
+
+  const updateManuscript = (oldManuscript, newManuscript) => {
+    axios
+      .put(MANU_UPDATE_ENDPOINT, {
+        old_manuscript: oldManuscript,
+        new_manuscript: newManuscript,
+      })
+      .then(() => {
+        fetchManu();
+        cancel();
+      })
+      .catch((error) => {
+        setError(`There was a problem updating the manuscript. ${error}`);
+      });
+  };
+
+  if (!visible) return null;
+
+  return (
+    <form>
+      <label htmlFor="title">Title</label>
+      <input required type="text" id="title" value={title} onChange={changeTitle} />
+
+      <label htmlFor="author_email">Author Email</label>
+      <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
+
+      <label htmlFor="text">Text</label>
+      <textarea 
+        required 
+        id="text" 
+        value={text} 
+        onChange={changeText} 
+        rows="6"  
+        cols="50"
+      />
+
+      <label htmlFor="abstract">Abstract</label>
+      <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
+
+      <label htmlFor="editor">Editor</label>
+      <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
+      <label htmlFor="manuscript_id">Manuscript ID</label>
+      <input required type="text" id="manuscript_id" value={manuscriptId} onChange={changeManuscriptId} />
+
+      <button type="button" onClick={cancel}>Cancel</button>
+      <button type="submit" onClick={handleSubmit}>
+        {editingManuscript ? 'Update' : 'Submit'}
+      </button>
+    </form>
+  );
+}
+
+AddManuscriptForm.propTypes = {
+  visible: propTypes.bool.isRequired,
+  cancel: propTypes.func.isRequired,
+  fetchManu: propTypes.func.isRequired,
+  setError: propTypes.func.isRequired,
+  editingManuscript: propTypes.object,
+  setEditingManuscript: propTypes.func.isRequired,
+};
+
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [editingManuscript, setEditingManuscript] = useState(null);
+  
   const fetchManu = () => {
     axios
       .get(MANU_READ_ENDPOINT)
@@ -148,6 +288,7 @@ function Manuscripts() {
             <th>Editor Email</th>
             <th>State</th>
             <th>Actions</th>
+            <th>Edit Manuscript</th>
             <th>Delete</th>
           </tr>
         </thead>
@@ -197,6 +338,30 @@ function Manuscripts() {
                     />
                     <Link to={`/manuscript/${manuscript.id}`}>View</Link>
                   </td>
+                  <td> 
+                    <button onClick={() => setEditingManuscript(true)}>Edit Manuscript</button>
+
+                      <AddManuscriptForm
+                        visible={editingManuscript !== null}
+                        cancel={() => {
+                          setEditingManuscript(null);
+                        }}
+                        fetchManu={fetchManu}
+                        setError={setError}
+                        editingManuscript={editingManuscript}
+                        setEditingManuscript={setEditingManuscript}
+                      />
+                    <AddManuscriptForm
+                        visible={editingManuscript !== null}
+                        cancel={() => {
+                          setEditingManuscript(null);
+                        }}
+                        fetchManu={fetchManu}
+                        setError={setError}
+                        editingManuscript={editingManuscript}
+                        setEditingManuscript={setEditingManuscript}
+                      />
+                    </td>
                   <td>                 
                     <button onClick={() =>
                       deleteManuscript({
