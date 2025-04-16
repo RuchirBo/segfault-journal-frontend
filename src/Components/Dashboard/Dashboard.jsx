@@ -7,6 +7,8 @@ import './Dashboard.css';
 import { BACKEND_URL } from '../../constants';
 
 const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
+const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
+
 //const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 
 const manuscriptsHeader = "View All Manuscripts";
@@ -39,6 +41,18 @@ function Manuscripts() {
       });
   };
 
+  const deleteManuscript = (manuscript_to_delete) => {
+    axios
+    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
+    .then(() => {
+      fetchManu();
+    })
+    .catch((error) => {
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
+    });
+  };
+
   useEffect(fetchManu, []);
 
   return (
@@ -67,6 +81,7 @@ function Manuscripts() {
             <th>Editor Email</th>
             <th>State</th>
             <th>Actions</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -109,6 +124,21 @@ function Manuscripts() {
                   </td>
                   <td>
                     <Link to={`/manuscript/${manuscript.id}`}>View</Link>
+                  </td>
+                  <td>                 
+                    <button onClick={() =>
+                      deleteManuscript({
+                      title: manuscript.title,
+                      author: manuscript.author,
+                      author_email: manuscript.author_email,
+                      text: manuscript.text,
+                      abstract: manuscript.abstract,
+                      editor_email: manuscript.editor_email,
+                    })
+                  }
+                >
+                  Delete Manuscript
+                </button>
                   </td>
                 </tr>
               ))
