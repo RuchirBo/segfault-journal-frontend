@@ -227,18 +227,15 @@ function Manuscripts() {
   const [addingManuscript, setAddingManuscript] = useState(false);
   const [editingManuscript, setEditingManuscript] = useState(null);
 
-  const deleteManuscript = (manuscript_to_delete) => {
+  const deleteManuscript = (id) => {
     axios
-    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
-    .then(() => {
-      fetchManu();
-    })
-    .catch((error) => {
-      const errorMessage = error.response?.data?.message || error.message;
-      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
-    });
+      .delete(MANU_DELETE_ENDPOINT, { data: { manuscript_id: id } })
+      .then(fetchManu)
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || error.message;
+        setError(`There was a problem deleting the manuscript. ${errorMessage}`);
+      });
   };
-
 
   const fetchManu = () => {
     axios
@@ -300,18 +297,7 @@ function Manuscripts() {
                   setError={setError}
                 />
                 <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
-                <button
-                  onClick={() =>
-                    deleteManuscript({
-                      title: manuscript.title,
-                      author: manuscript.author,
-                      author_email: manuscript.author_email,
-                      text: manuscript.text,
-                      abstract: manuscript.abstract,
-                      editor_email: manuscript.editor_email,
-                    })
-                  }
-                >
+                <button onClick={() => deleteManuscript(manuscript.manuscript_id)}>
                   Delete Manuscript
                 </button>
               </div>
