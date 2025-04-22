@@ -11,6 +11,7 @@ const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
+const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 
 
 const manuscriptsHeader = "View All Manuscripts";
@@ -42,7 +43,7 @@ const availableActionsMap = {
 };
 const getAvailableActions = (state) => availableActionsMap[state] || [];
 
-function UpdateActionButton({ manuscript, refreshManu, setError }) {
+function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAction, setSelectedAction] = useState("");
   const actions = getAvailableActions(manuscript.state);
@@ -51,11 +52,10 @@ function UpdateActionButton({ manuscript, refreshManu, setError }) {
     const action = event.target.value;
     console.log(action)
     setSelectedAction(action);
-    const selectedRefs = manuscript.referees;
-    console.log(selectedRefs)
+
     if (action) {
       axios
-        .put(MANU_RECEIVE_ACTION_ENDPOINT, { title: manuscript.title, action, referees: selectedRefs[0]})
+        .put(MANU_RECEIVE_ACTION_ENDPOINT, { title: manuscript.title, action, referees})
         .then(() => {
           refreshManu();
           setShowDropdown(false);
@@ -92,6 +92,7 @@ UpdateActionButton.propTypes = {
   }).isRequired,
   refreshManu: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
+  referees: propTypes.arrayOf(propTypes.string).isRequired,
 };
 
 function EditManuscriptForm({
@@ -236,6 +237,21 @@ function Manuscripts() {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingManuscript, setEditingManuscript] = useState(null);
+  const [referees, setReferees] = useState([]);
+
+  useEffect(() => {
+    axios.get(PEOPLE_READ_ENDPOINT)
+      .then(({ data }) => {
+        const peopleArray = Object.values(data);
+        const refereeList = peopleArray.filter(person =>
+          person.roles.some(role => role.includes("RE"))
+        );
+        setReferees(refereeList.map(r => r.email)); 
+      })
+      .catch((error) => {
+        setError(`Could not load referees: ${error.message}`);
+      });
+  }, []);
   
   const fetchManu = () => {
     axios
@@ -334,6 +350,7 @@ function Manuscripts() {
                     <UpdateActionButton
                       manuscript={manuscript}
                       refreshManu={fetchManu}
+                      referees={referees}
                       setError={setError}
                     />
                     <Link to={`/manuscript/${manuscript.id}`}>View</Link>
