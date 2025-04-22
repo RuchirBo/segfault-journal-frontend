@@ -103,12 +103,12 @@ function EditManuscriptForm({
   editingManuscript,
   setEditingManuscript,
 }) {
-  const [title, setTitle] = useState('');
-  const [author_email, setAuthorEmail] = useState('');
-  const [text, setText] = useState('');
-  const [abstract, setAbstract] = useState('');
-  const [editor_email, setEditorEmail] = useState('');  
-  const [manuscriptId, setManuscriptId] = useState('');
+  const [title, setTitle] = useState(editingManuscript.title);
+  const [author_email, setAuthorEmail] = useState(editingManuscript.author_email);
+  const [text, setText] = useState(editingManuscript.text);
+  const [abstract, setAbstract] = useState(editingManuscript.abstract);
+  const [editor_email, setEditorEmail] = useState(editingManuscript.editor_email);  
+  const [manuscriptId, setManuscriptId] = useState(editingManuscript.id);
 
   useEffect(() => {
     if (editingManuscript) {
@@ -356,29 +356,8 @@ function Manuscripts() {
                     <Link to={`/manuscript/${manuscript.id}`}>View</Link>
                   </td>
                   <td> 
-                    <button onClick={() => setEditingManuscript(true)}>Edit Manuscript</button>
-
-                      <EditManuscriptForm
-                        visible={editingManuscript !== null}
-                        cancel={() => {
-                          setEditingManuscript(null);
-                        }}
-                        fetchManu={fetchManu}
-                        setError={setError}
-                        editingManuscript={editingManuscript}
-                        setEditingManuscript={setEditingManuscript}
-                      />
-                    <EditManuscriptForm
-                        visible={editingManuscript !== null}
-                        cancel={() => {
-                          setEditingManuscript(null);
-                        }}
-                        fetchManu={fetchManu}
-                        setError={setError}
-                        editingManuscript={editingManuscript}
-                        setEditingManuscript={setEditingManuscript}
-                      />
-                    </td>
+                    <button onClick={() => setEditingManuscript(manuscript)}>Edit Manuscript</button>
+                  </td>
                   <td>                 
                     <button onClick={() =>
                       deleteManuscript({
@@ -394,15 +373,32 @@ function Manuscripts() {
                   Delete Manuscript
                 </button>
                   </td>
-                </tr>
+                </tr> 
               ))
+          
           ) : (
             <tr>
               <td colSpan="8">No manuscripts found.</td>
             </tr>
           )}
         </tbody>
+        
       </table>
+
+      {editingManuscript && (
+      <div className = "modal-overlay">
+        <div className = "modal-content">
+          <EditManuscriptForm
+              visible={true}
+              cancel={() => setEditingManuscript(null)}
+              fetchManu={fetchManu}
+              setError={setError}
+              editingManuscript={editingManuscript}
+              setEditingManuscript={setEditingManuscript}
+          />
+        </div>
+      </div>
+    )}
     </div>
   );
 }
