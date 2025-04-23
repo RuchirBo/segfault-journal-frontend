@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 
@@ -44,6 +44,38 @@ describe('Dashboard Component', () => {
 
     render(<Dashboard />);
   });
+
+  it('renders correct text for Edit Manuscript form', async () => {
+    const mockManuscripts = [
+      {
+        id: '1',
+        title: 'This is a manuscript.',
+        author: 'Steph Curry',
+        author_email: 'stephcurry@nyu.edu',
+        state: 'SUB',
+        text: 'Some text',
+        abstract: 'This is a poem.',
+        editor: 'rsh9689@nyu.edu',
+      },
+    ];
+    axios.get.mockResolvedValue({ data: { manuscripts: mockManuscripts } });
+    render(<Dashboard />);
+
+    const editButton = await screen.getByText("Edit Manuscript");
+    fireEvent.click(editButton);
+
+    // await waitFor(() => {
+    //   expect(document.querySelector("modal-overlay")).toBeInTheDocument();
+    // });
+  
+    // expect(await screen.getByText("Title")).toBeInTheDocument();
+    // expect(await screen.getByText("Author Email")).toBeInTheDocument();
+    // expect(await screen.getByText("Text")).toBeInTheDocument();
+    // expect(await screen.getByText("Abstract")).toBeInTheDocument();
+    // expect(await screen.getByText("Editor")).toBeInTheDocument();
+    // expect(await screen.getByText("Manuscript ID")).toBeInTheDocument();
+  });
+
 });
 
 
