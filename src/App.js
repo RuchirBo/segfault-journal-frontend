@@ -18,6 +18,8 @@ import Login from './Account/Login';
 import Register from './Account/Register';
 import Dashboard from './Components/Dashboard';
 import Profile from './Account/Profile';
+import ViewManuscript from './Components/Dashboard/ViewManuscript';
+
 
 function PersonPage() {
   const { name } = useParams();
@@ -97,6 +99,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="/manuscripts/:id" element={<ViewManuscript />} />
       </Routes>
     </BrowserRouter>
   );

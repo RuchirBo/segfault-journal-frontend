@@ -232,6 +232,7 @@ EditManuscriptForm.propTypes = {
   setEditingManuscript: propTypes.func.isRequired,
 };
 
+
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);
   const [error, setError] = useState('');
@@ -309,7 +310,10 @@ function Manuscripts() {
           </tr>
         </thead>
         <tbody>
-          {manuscripts.filter((manuscript) => {
+          {
+            manuscripts
+            .filter((manuscript) => manuscript.state !== 'REJ')
+            .filter((manuscript) => {
             const search = searchQuery.toLowerCase();
             return (
               manuscript.title.toLowerCase().includes(search) ||
@@ -322,6 +326,7 @@ function Manuscripts() {
             );
           }).length > 0 ? (
             manuscripts
+              .filter((manuscript) => manuscript.state !== 'REJ')
               .filter((manuscript) => {
                 const search = searchQuery.toLowerCase();
                 return (
@@ -335,7 +340,7 @@ function Manuscripts() {
                 );
               })
               .map((manuscript) => (
-                <tr key={manuscript.id}>
+                <tr key={manuscript.manuscript_id}>
                   <td>{manuscript.title}</td>
                   <td>{manuscript.author}</td>
                   <td>{manuscript.author_email}</td>
@@ -353,7 +358,7 @@ function Manuscripts() {
                       referees={referees}
                       setError={setError}
                     />
-                    <Link to={`/manuscript/${manuscript.id}`}>View</Link>
+                    <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
                   <td> 
                     <button onClick={() => setEditingManuscript(manuscript)}>Edit Manuscript</button>
