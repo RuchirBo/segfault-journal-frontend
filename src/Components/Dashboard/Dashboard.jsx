@@ -46,39 +46,80 @@ const getAvailableActions = (state) => availableActionsMap[state] || [];
 function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAction, setSelectedAction] = useState("");
+  const [showRefSelect, setShowRefSelect] = useState(false);
+  const [selectedRef, setSelectedRef] = useState("");
+
   const actions = getAvailableActions(manuscript.state);
 
-  const handleActionSelect = (event) => {
-    const action = event.target.value;
-    console.log(action)
+  const handleActionSelect = e => {
+    const action = e.target.value;
     setSelectedAction(action);
 
-    if (action) {
-      axios
-        .put(MANU_RECEIVE_ACTION_ENDPOINT, { title: manuscript.title, action, referees})
-        .then(() => {
-          refreshManu();
-          setShowDropdown(false);
-        })
-        .catch((error) => {
-          const errorMessage = error.response?.data?.message || error.message;
-          setError(`Could not update action: ${errorMessage}`);
-        });
+    if (action === "ARF") {
+      setShowRefSelect(true);
+      return;
     }
+    sendAction(action, referees);
   };
 
+  const sendAction = (action, refs) => {
+    axios.put(MANU_RECEIVE_ACTION_ENDPOINT, {
+      title: manuscript.title,
+      action,
+      referees: refs
+    })
+    .then(() => {
+      refreshManu();
+      resetAll();
+    })
+    .catch(err => setError(err.response?.data?.message || err.message));
+  };
+
+  const handleAssignReferee = () => {
+    if (!selectedRef) {
+      setError("Please pick a referee.");
+      return;
+    }
+    sendAction("ARF", [selectedRef]);
+  };
+
+  const resetAll = () => {
+    setShowDropdown(false);
+    setShowRefSelect(false);
+    setSelectedAction("");
+    setSelectedRef("");
+  };
+
+  const available = referees.filter(r => !manuscript.referees.includes(r));
+
   return (
-    <div className="update-action-button" style={{ display: "inline-block", marginRight: "10px" }}>
+    <div className="update-action-button" style={{ display: "inline-block", marginRight: 10 }}>
       <button onClick={() => setShowDropdown(!showDropdown)}>Update Action</button>
+
       {showDropdown && (
-        <select onChange={handleActionSelect} value={selectedAction}>
-          <option value="">Select Action</option>
-          {actions.map((action) => (
-            <option key={action} value={action}>
-              {action}
-            </option>
-          ))}
-        </select>
+        <>
+          <select onChange={handleActionSelect} value={selectedAction}>
+            <option value="">Select Action</option>
+            {actions.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+
+          {showRefSelect && (
+            <div style={{ marginTop: 8 }}>
+              <select
+                value={selectedRef}
+                onChange={e => setSelectedRef(e.target.value)}
+              >
+                <option value="">Pick a referee</option>
+                {available.map(email => (
+                  <option key={email} value={email}>
+                    {email}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleAssignReferee}>Assign</button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -94,6 +135,7 @@ UpdateActionButton.propTypes = {
   setError: propTypes.func.isRequired,
   referees: propTypes.arrayOf(propTypes.string).isRequired,
 };
+
 
 function EditManuscriptForm({
   visible,
@@ -368,6 +410,7 @@ function Manuscripts() {
             <th>Text</th>
             <th>Abstract</th>
             <th>Editor Email</th>
+            <th>Referees</th>
             <th>State</th>
             <th>Actions</th>
             <th>Edit Manuscript</th>
@@ -387,6 +430,10 @@ function Manuscripts() {
               manuscript.text.toLowerCase().includes(search) ||
               manuscript.abstract.toLowerCase().includes(search) ||
               manuscript.editor_email.toLowerCase().includes(search) ||
+              (manuscript.referees || [])
+              .join(', ')
+              .toLowerCase()
+              .includes(search) ||
               manuscript.state.toLowerCase().includes(search)
             );
           }).length > 0 ? (
@@ -401,6 +448,10 @@ function Manuscripts() {
                   manuscript.text.toLowerCase().includes(search) ||
                   manuscript.abstract.toLowerCase().includes(search) ||
                   manuscript.editor_email.toLowerCase().includes(search) ||
+                  (manuscript.referees || [])
+                  .join(', ')
+                  .toLowerCase()
+                  .includes(search) ||
                   manuscript.state.toLowerCase().includes(search)
                 );
               })
@@ -412,6 +463,11 @@ function Manuscripts() {
                   <td>{manuscript.text}</td>
                   <td>{manuscript.abstract}</td>
                   <td>{manuscript.editor_email}</td>
+                  <td>
+                  {manuscript.referees && manuscript.referees.length > 0
+                    ? manuscript.referees.join(', ')
+                    : '—'}
+                  </td>
                   <td className="state-container">
                     <div className="state">{manuscript.state}</div>
                     <div className="state-description">{manuscript.state_description}</div>
