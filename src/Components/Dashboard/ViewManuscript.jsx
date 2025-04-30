@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '../../constants';
 import axios from 'axios';
+import './ViewManuscript.css'
 
 
 function ViewManuscript() {
@@ -24,11 +25,13 @@ function ViewManuscript() {
     if (!manuscript) return <div>Error</div>;
   
     return (
-      <div>
-        <h2>{manuscript.title}</h2>
-        <p><strong>Author</strong> {manuscript.author}</p>
-        <p><strong>Abstract</strong> {manuscript.abstract}</p>
-        <p><strong>Text</strong> {manuscript.text}</p>
+      <div className="wrapper">
+        <div className="manuscript-item">
+          <h2>{manuscript.title}</h2>
+          <p><strong>Author</strong> {manuscript.author}</p>
+          <p><strong>Abstract</strong> {manuscript.abstract}</p>
+          <p><strong>Text</strong> {manuscript.text}</p>
+        </div>
       </div>
     );
   }

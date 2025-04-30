@@ -288,7 +288,7 @@ function Manuscripts() {
               {manuscript.state_description && (
                 <p><strong>State Description:</strong> {manuscript.state_description}</p>
               )}
-              <Link to={`/manuscript/${manuscript.id}`}>View Details</Link>
+              <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View Details</Link>
               <br /><br />
               <div className="action-buttons">
                 <UpdateActionButton
