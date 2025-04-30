@@ -93,8 +93,8 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
   const available = referees.filter(r => !manuscript.referees.includes(r));
 
   return (
-    <div className="update-action-button" style={{ display: "inline-block", marginRight: 10 }}>
-      <button onClick={() => setShowDropdown(!showDropdown)}>Update Action</button>
+    <div className="update-action-button" style={{ marginRight: 10 }}>
+      <button onClick={() => setShowDropdown(!showDropdown)} style={{ fontSize: '10px' }}>Update Action</button>
 
       {showDropdown && (
         <>
@@ -482,7 +482,7 @@ function Manuscripts() {
                     <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
                   <td> 
-                    <button onClick={() => setEditingManuscript(manuscript)}>Edit Manuscript</button>
+                    <button onClick={() => setEditingManuscript(manuscript)} style={{ fontSize: '10px' }}>Edit Manuscript</button>
                   </td>
                   <td>                 
                     <button onClick={() =>
@@ -495,6 +495,7 @@ function Manuscripts() {
                       editor_email: manuscript.editor_email,
                     })
                   }
+                  style={{ fontSize: '10px' }}
                 >
                   Delete Manuscript
                 </button>

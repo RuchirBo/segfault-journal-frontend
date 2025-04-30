@@ -1,11 +1,13 @@
 .manuscript-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: white;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
+    font-size: 12px; /* Optional: slightly smaller text */
   }
   
   .manuscript-table th, .manuscript-table td {
