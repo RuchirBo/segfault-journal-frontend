@@ -10,15 +10,16 @@ const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
 const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
+const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 
 const availableActionsMap = {
-  SUB: ["ASSIGN_REF", "REJECT", "WITHDRAW"],
-  REV: ["ACCEPT", "ACCEPT_WITH_REV", "SUBMIT_REV", "DELETE_REF", "ASSIGN_REF", "REJECT", "WITHDRAW"],
-  CED: ["DONE", "WITHDRAW"],
-  AUREVIEW: ["DONE", "WITHDRAW"],
-  FORM: ["DONE", "WITHDRAW"],
-  AUTHREVISION: ["DONE", "WITHDRAW"],
-  EDREV: ["ACCEPT", "WITHDRAW"],
+  SUB: ["ARF", "REJ", "WITHDRAW"],
+  REV: ["ACC", "ACCWITHREV", "SUBREV", "DRF", "ARF", "REJ", "WITHDRAW"],
+  CED: ["DON", "WITHDRAW"],
+  AUREVIEW: ["DON", "WITHDRAW"],
+  FORM: ["DON", "WITHDRAW"],
+  AUTHREVISION: ["DON", "WITHDRAW"],
+  EDREV: ["ACC", "WITHDRAW"],
   PUB: [],
   REJ: [],
   WITHDRAWN: [],
@@ -35,7 +36,10 @@ function UpdateActionButton({ manuscript, refreshManu, setError }) {
     setSelectedAction(action);
     if (action) {
       axios
-        .put(MANU_UPDATE_ENDPOINT, { manuscript_id: manuscript.id, action })
+        .put(MANU_RECEIVE_ACTION_ENDPOINT, {
+          manuscript_id: manuscript.manuscript_id,
+          action,
+        })
         .then(() => {
           refreshManu();
           setShowDropdown(false);

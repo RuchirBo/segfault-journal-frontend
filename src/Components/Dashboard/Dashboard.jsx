@@ -30,13 +30,13 @@ ErrorMessage.propTypes = {
 
 
 const availableActionsMap = {
-  SUB: ["ARF", "REJ", "WITH"],
-  REV: ["ACC", "ACCWITHREV", "SUBREV", "DRF", "ARF", "REJ", "WITH"],
-  CED: ["DON", "WITH"],
-  AUREVIEW: ["DON", "WITH"],
-  FORM: ["DON", "WITH"],
-  AUTHREVISION: ["DON", "WITH"],
-  EDREV: ["ACC", "WITH"],
+  SUB: ["ARF", "REJ", "WITHDRAW"],
+  REV: ["ACC", "ACCWITHREV", "SUBREV", "DRF", "ARF", "REJ", "WITHDRAW"],
+  CED: ["DON", "WITHDRAW"],
+  AUREVIEW: ["DON", "WITHDRAW"],
+  FORM: ["DON", "WITHDRAW"],
+  AUTHREVISION: ["DON", "WITHDRAW"],
+  EDREV: ["ACC", "WITHDRAW"],
   PUB: [],
   REJ: [],
   WITHDRAWN: [],
@@ -64,7 +64,7 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
 
   const sendAction = (action, refs) => {
     axios.put(MANU_RECEIVE_ACTION_ENDPOINT, {
-      title: manuscript.title,
+      manuscript_id: manuscript.manuscript_id,
       action,
       referees: refs
     })
@@ -127,6 +127,7 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
 
 UpdateActionButton.propTypes = {
   manuscript: propTypes.shape({
+    manuscript_id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
     state: propTypes.string.isRequired,
     referees: propTypes.arrayOf(propTypes.string).isRequired,
