@@ -13,6 +13,10 @@
   .manuscript-table th, .manuscript-table td {
     padding: 18px 25px; 
     text-align: left;
+    word-wrap: break-word;
+    white-space: normal;     
+    overflow-wrap: break-word;  
+    vertical-align: top;    
   }
   
   .manuscript-table th {
@@ -106,6 +110,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-direction: column;
   }
 
   .modal-overlay{

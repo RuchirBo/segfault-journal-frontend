@@ -366,6 +366,7 @@ function Manuscripts() {
   };
 
   const deleteManuscript = (manuscript_to_delete) => {
+    console.log("Manuscript to delete:", manuscript_to_delete.manuscript_id);
     axios
     .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
     .then(() => {
@@ -494,6 +495,7 @@ function Manuscripts() {
                       text: manuscript.text,
                       abstract: manuscript.abstract,
                       editor_email: manuscript.editor_email,
+                      manuscript_id: manuscript.manuscript_id,
                     })
                   }
                   style={{ fontSize: '10px' }}
