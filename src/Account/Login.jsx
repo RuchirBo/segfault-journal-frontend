@@ -23,6 +23,7 @@ function Login() {
           password: password,
           role_key: roleKey
         }),
+        credentials: 'include',
       });
 
       if (response.ok) {

@@ -1,33 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
 
 function Profile() {
     const [user, setUser] = useState({
-      name: 'Guest',
       email: 'Guest',
       role: 'Guest'
     });
   
     useEffect(() => {
-      const token = localStorage.getItem('authToken');
-      if (token) {
+      const fetchUser = async () => {
         try {
-          const decoded = jwtDecode(token);
+          const response = await fetch('http://127.0.0.1:8000/auth/user', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+    
+          if (!response.ok) {
+            throw new Error('Not logged in');
+          }
+    
+          const data = await response.json();
+          console.log(data)
           setUser({
-            name: decoded.name || decoded.email || 'Guest',
-            email: decoded.email || 'Guest',
-            role: decoded.role || 'Guest'
+            email: data.email,
+            role: data.role
           });
         } catch (error) {
-          console.error('Error decoding token:', error);
+          console.error('Failed to fetch user:', error);
+          setUser({
+            email: 'Guest',
+            role: 'Guest'
+          });
         }
-      }
+      };
+    
+      fetchUser();
     }, []);
+    
   
     return (
       <div className="profile">
         <h2>User Profile</h2>
-        <p><strong>Name:</strong> {user.name}</p>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Role:</strong> {user.role}</p>
       </div>
