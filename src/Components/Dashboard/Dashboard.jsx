@@ -339,6 +339,8 @@ function Manuscripts() {
   const [editingManuscript, setEditingManuscript] = useState(null);
   const [referees, setReferees] = useState([]);
   const [addingManuscript, setAddingManuscript] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
+
 
   useEffect(() => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -379,6 +381,42 @@ function Manuscripts() {
   };
 
   useEffect(fetchManu, []);
+
+  useEffect(() => {
+    const fetchUserAndCheckIfEditor = async () => {
+      try {
+        const userResponse = await fetch('http://127.0.0.1:8000/auth/user', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('Not logged in');
+        }
+
+        const userData = await userResponse.json();
+
+        const isEditorResponse = await axios.get(`${BACKEND_URL}/people/editors`, {
+          withCredentials: true,
+        });
+    
+        console.log('Editors Data:', isEditorResponse.data.editors);
+
+        const editorsData = isEditorResponse.data.editors
+
+        const editorEmails = editorsData.map((editor) => editor.email);
+        setIsEditor(editorEmails.includes(userData.email));
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchUserAndCheckIfEditor();
+  }, []);
+
 
   return (
     <div className="wrapper">
@@ -484,25 +522,36 @@ function Manuscripts() {
                     <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
                   <td> 
-                    <button onClick={() => setEditingManuscript(manuscript)} style={{ fontSize: '10px' }}>Edit Manuscript</button>
+                  {isEditor ? (
+                    <button onClick={() => setEditingManuscript(manuscript)} style={{ fontSize: '10px' }}>
+                      Edit Manuscript
+                    </button>
+                  ) : (
+                    <p>You do not have permission to edit this manuscript.</p>
+                  )}
                   </td>
-                  <td>                 
-                    <button onClick={() =>
-                      deleteManuscript({
-                      title: manuscript.title,
-                      author: manuscript.author,
-                      author_email: manuscript.author_email,
-                      text: manuscript.text,
-                      abstract: manuscript.abstract,
-                      editor_email: manuscript.editor_email,
-                      manuscript_id: manuscript.manuscript_id,
-                    })
-                  }
-                  style={{ fontSize: '10px' }}
-                >
-                  Delete Manuscript
-                </button>
-                  </td>
+                  <td>
+                  {isEditor ? (
+                    <button
+                      onClick={() =>
+                        deleteManuscript({
+                          title: manuscript.title,
+                          author: manuscript.author,
+                          author_email: manuscript.author_email,
+                          text: manuscript.text,
+                          abstract: manuscript.abstract,
+                          editor_email: manuscript.editor_email,
+                          manuscript_id: manuscript.manuscript_id,
+                        })
+                      }
+                      style={{ fontSize: '10px' }}
+                    >
+                      Delete Manuscript
+                    </button>
+                  ) : (
+                    <p>You do not have permission to delete this manuscript.</p>
+                  )}
+                </td>
                 </tr> 
               ))
           
