@@ -30,7 +30,6 @@ function UpdateActionButton({ manuscript, refreshManu, setError }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAction, setSelectedAction] = useState("");
   const actions = getAvailableActions(manuscript.state);
-
   const handleActionSelect = (event) => {
     const action = event.target.value;
     setSelectedAction(action);
@@ -116,51 +115,15 @@ function AddManuscriptForm({
   const changeAuthorEmail = (event) => setAuthorEmail(event.target.value);
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
-  const changeEditorEmail = (event) => setEditorEmail(event.target.value);
   const changeManuscriptId = (e) => setManuscriptId(e.target.value);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (!title || !author_email || !text || !abstract || !editor_email || !manuscriptId) {
-      setError('All fields are required to add a manuscript.');
-      return;
-    }
-
-    const newManuscript = {
-      title: title,
-      author_email: author_email,
-      text: text,
-      abstract: abstract,
-      editor_email: editor_email,
-      manuscript_id: manuscriptId,
-    }
-
-    const resetManuscriptForm = () => {
-      setTitle('');
-      setAuthorEmail('');
-      setText('');
-      setAbstract('');
-      setEditorEmail('');
-      setManuscriptId('');
-    };
-
-    if (editingManuscript) {
-      updateManuscript(editingManuscript, newManuscript);
-    } else {
-      axios
-        .put(MANU_CREATE_ENDPOINT, newManuscript)
-        .then(() => {
-          fetchManu(); 
-          resetManuscriptForm();
-          window.location.reload();
-        })
-        .catch((error) => {
-          const errorMessage = error.response?.data?.message || error.message;
-          setError(`There was a problem adding the manuscript. ${errorMessage}`);
-        });
-    }
-    setEditingManuscript(null);
+  const resetManuscriptForm = () => {
+    setTitle('');
+    setAuthorEmail('');
+    setText('');
+    setAbstract('');
+    setEditorEmail('');
+    setManuscriptId('');
   };
 
   const updateManuscript = (oldManuscript, newManuscript) => {
@@ -176,6 +139,61 @@ function AddManuscriptForm({
       .catch((error) => {
         setError(`There was a problem updating the manuscript. ${error}`);
       });
+  };
+
+  const fetchRandomEditor = () => {
+    return axios
+      .get(`${BACKEND_URL}/manuscripts/get_random_editor`)
+      .then((response) => {
+        if (response && response.data && response.data.editor_email) {
+          const randomEditor = response.data.editor_email;
+          setEditorEmail(randomEditor);
+          return randomEditor;
+        }
+        throw new Error("No editor email received from server.");
+      });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!title || !author_email || !text || !abstract || !manuscriptId) {
+      setError('All fields are required to add a manuscript.');
+      return;
+    }
+
+    const newManuscript = {
+      title,
+      author_email,
+      text,
+      abstract,
+      editor_email,
+      manuscript_id: manuscriptId,
+    };
+
+    if (editingManuscript) {
+      updateManuscript(editingManuscript, newManuscript);
+    } else {
+      fetchRandomEditor()
+        .then((editor) => {
+          const manuscriptWithEditor = {
+            ...newManuscript,
+            editor_email: editor,
+          };
+          return axios.put(MANU_CREATE_ENDPOINT, manuscriptWithEditor);
+        })
+        .then(() => {
+          fetchManu();
+          resetManuscriptForm();
+          window.location.reload();
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || error.message;
+          setError(`There was a problem adding the manuscript. ${errorMessage}`);
+        });
+    }
+
+    setEditingManuscript(null);
   };
 
   if (!visible) return null;
@@ -201,8 +219,6 @@ function AddManuscriptForm({
       <label htmlFor="abstract">Abstract</label>
       <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
 
-      <label htmlFor="editor">Editor</label>
-      <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
       <label htmlFor="manuscript_id">Manuscript ID</label>
       <input required type="text" id="manuscript_id" value={manuscriptId} onChange={changeManuscriptId} />
 
