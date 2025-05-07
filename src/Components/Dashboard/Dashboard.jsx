@@ -3,6 +3,7 @@ import propTypes from 'prop-types';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Dashboard.css';
+import CollapsibleText from './CollapsibleText';
 
 import { BACKEND_URL } from '../../constants';
 
@@ -433,7 +434,7 @@ function Manuscripts() {
                   <td>{manuscript.title}</td>
                   <td>{manuscript.author}</td>
                   <td>{manuscript.author_email}</td>
-                  <td>{manuscript.text}</td>
+                  <td>{ <CollapsibleText text={manuscript.text} limit={50} />}</td>
                   <td>{manuscript.abstract}</td>
                   <td>{manuscript.editor_email}</td>
                   <td>
