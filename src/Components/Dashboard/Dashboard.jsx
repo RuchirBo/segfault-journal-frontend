@@ -44,13 +44,34 @@ const availableActionsMap = {
 };
 const getAvailableActions = (state) => availableActionsMap[state] || [];
 
-function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
+
+const filterActionsByRole = (state, roles) => {
+  
+  if (roles.includes("EDITOR")) {
+    console.log(roles)
+    return getAvailableActions(state).filter(action => action !== "WITHDRAW" && action !== "SUBREV");
+  }
+  
+  if (roles.includes("AUTHOR")) {
+    return getAvailableActions(state).filter(action => action === "WITHDRAW" || action === "DON");
+  }
+  
+  if (roles.includes("REFEREE")) {
+    return getAvailableActions(state).filter(action => action === "SUBREV");
+  }
+  
+  return [];
+};
+
+function UpdateActionButton({ manuscript, refreshManu, setError, referees, userRoles}) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAction, setSelectedAction] = useState("");
   const [showRefSelect, setShowRefSelect] = useState(false);
   const [selectedRef, setSelectedRef] = useState("");
 
-  const actions = getAvailableActions(manuscript.state);
+  // const actions = getAvailableActions(manuscript.state);
+  const availableActions = filterActionsByRole(manuscript.state, userRoles);
+
 
   const handleActionSelect = e => {
     const action = e.target.value;
@@ -105,7 +126,7 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
         <>
           <select onChange={handleActionSelect} value={selectedAction}>
             <option value="">Select Action</option>
-            {actions.map(a => <option key={a} value={a}>{a}</option>)}
+            {availableActions.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
 
           {showRefSelect && (
@@ -140,6 +161,7 @@ UpdateActionButton.propTypes = {
   refreshManu: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
   referees: propTypes.arrayOf(propTypes.string).isRequired,
+  userRoles: propTypes.string.isRequired,
 };
 
 
@@ -281,7 +303,7 @@ function Manuscripts() {
   const [editingManuscript, setEditingManuscript] = useState(null);
   const [referees, setReferees] = useState([]);
   const [isEditor, setIsEditor] = useState(false);
-
+  const [userRoles, setUserRoles] = useState([]);
 
   useEffect(() => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -339,6 +361,9 @@ function Manuscripts() {
         }
 
         const userData = await userResponse.json();
+        console.log(userData)
+
+        setUserRoles(userData.role); 
 
         const isEditorResponse = await axios.get(`${BACKEND_URL}/people/editors`, {
           withCredentials: true,
@@ -452,6 +477,7 @@ function Manuscripts() {
                       refreshManu={fetchManu}
                       referees={referees}
                       setError={setError}
+                      userRoles={userRoles}
                     />
                     <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
