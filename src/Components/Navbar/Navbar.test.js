@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Navbar from './Navbar';
 import { BrowserRouter as Router } from 'react-router-dom';
+import '@testing-library/jest-dom';
 
 describe('Navbar', () => {
   test('renders all navigation links correctly', () => {
