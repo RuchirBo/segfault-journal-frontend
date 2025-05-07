@@ -55,11 +55,12 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
     const action = e.target.value;
     setSelectedAction(action);
 
-    if (action === "ARF") {
+    if (action === "ARF" || action === "DRF") {
       setShowRefSelect(true);
       return;
     }
-    sendAction(action, referees);
+
+    sendAction(action, []);
   };
 
   const sendAction = (action, refs) => {
@@ -75,12 +76,12 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
     .catch(err => setError(err.response?.data?.message || err.message));
   };
 
-  const handleAssignReferee = () => {
+  const handleRefereePick = () => {
     if (!selectedRef) {
       setError("Please pick a referee.");
       return;
     }
-    sendAction("ARF", [selectedRef]);
+    sendAction(selectedAction, [selectedRef]);
   };
 
   const resetAll = () => {
@@ -90,11 +91,14 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
     setSelectedRef("");
   };
 
-  const available = referees.filter(r => !manuscript.referees.includes(r));
+  const available = selectedAction === "DRF"
+    ? manuscript.referees
+    : referees.filter(r => !manuscript.referees.includes(r));
 
   return (
     <div className="update-action-button" style={{ marginRight: 10 }}>
-      <button onClick={() => setShowDropdown(!showDropdown)} style={{ fontSize: '10px' }}>Update Action</button>
+      <button onClick={() => setShowDropdown(!showDropdown)}
+              style={{ fontSize: '10px' }}>Update Action</button>
 
       {showDropdown && (
         <>
@@ -111,12 +115,12 @@ function UpdateActionButton({ manuscript, refreshManu, setError, referees }) {
               >
                 <option value="">Pick a referee</option>
                 {available.map(email => (
-                  <option key={email} value={email}>
-                    {email}
-                  </option>
+                  <option key={email} value={email}>{email}</option>
                 ))}
               </select>
-              <button onClick={handleAssignReferee}>Assign</button>
+              <button onClick={handleRefereePick}>
+                {selectedAction === "ARF" ? "Assign" : "Remove"}
+              </button>
             </div>
           )}
         </>
