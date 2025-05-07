@@ -6,8 +6,7 @@ const PAGES = [
   { label: 'Home', destination: '/' },
   { label: 'View All People', destination: '/people' },
   { label: 'Masthead', destination: '/Masthead' },
-  { label: 'Submissions', destination: '/submissions' },
-  { label: 'About', destination: '/about' },
+  { label: 'Submit Papers', destination: '/submissions' },
   { label: 'Dashboard', destination: '/dashboard' },
   { label: 'Profile', destination: '/profile' },
 ];
