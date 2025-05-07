@@ -1,3 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
 .manuscript-table {
     width: 100%;
     table-layout: fixed;
@@ -11,7 +23,8 @@
   }
   
   .manuscript-table th, .manuscript-table td {
-    padding: 18px 25px; 
+    padding: 12px 18px; /* Reduce from 18px 25px to save space and improve alignment */
+    line-height: 1.4; 
     text-align: left;
     word-wrap: break-word;
     white-space: normal;     
@@ -108,9 +121,11 @@
   
   .actions-list {
     display: flex;
-    align-items: center;
-    gap: 12px;
     flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 150px;
+    flex-wrap: wrap;
   }
 
   .modal-overlay{
