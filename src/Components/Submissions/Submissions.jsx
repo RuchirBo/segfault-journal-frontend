@@ -239,7 +239,7 @@ AddManuscriptForm.propTypes = {
   setEditingManuscript: propTypes.func.isRequired,
 };
 
-const manuscriptsHeader = "View All Submissions";
+const manuscriptsHeader = "Submissions";
 
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);

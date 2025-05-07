@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
+import { BACKEND_URL } from '../constants';
+const PEOPLE_CREATE_ENDPOINT = `${BACKEND_URL}/people/create`;
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -9,6 +11,7 @@ function Register() {
   const [roleKey, setRoleKey] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [affiliation, setAffiliation] = useState('');
 
 
   const navigate = useNavigate();
@@ -17,7 +20,7 @@ function Register() {
     event.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
-
+  
     try {
       const response = await fetch('http://127.0.0.1:8000/auth/register', {
         method: 'POST',
@@ -29,11 +32,23 @@ function Register() {
           role_key: roleKey
         }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setSuccessMsg(data.message || 'Registered successfully!');
-        navigate('/home')
+  
+        await fetch(PEOPLE_CREATE_ENDPOINT, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: email.split('@')[0],
+            email,
+            roles: role ? [role] : [],
+            affiliation: affiliation,
+          }),
+        });
+  
+        navigate('/home');
       } else {
         const errorData = await response.json();
         setErrorMsg(errorData.message || 'Registration error');
@@ -43,6 +58,7 @@ function Register() {
       setErrorMsg('Network or server error occurred');
     }
   };
+  
 
   return (
     <div className="wrapper">
@@ -59,6 +75,15 @@ function Register() {
           placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label htmlFor="affiliation">Affiliation</label>
+        <input
+          type="affiliation"
+          id="affiliation"
+          placeholder="Enter affiliation"
+          value={affiliation}
+          onChange={(e) => setAffiliation(e.target.value)}
           required
         />
 
