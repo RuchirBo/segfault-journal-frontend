@@ -73,7 +73,7 @@ function Register() {
 
   return (
     <div className="wrapper">
-      <h1>Register for Segfault Journals</h1>
+      <h1>Register for Evil AI Journals</h1>
 
       {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
       {successMsg && <p style={{ color: 'green' }}>{successMsg}</p>}
