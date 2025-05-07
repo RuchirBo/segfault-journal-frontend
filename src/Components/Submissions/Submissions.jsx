@@ -274,12 +274,98 @@ function Manuscripts() {
 
   return (
     <div className="wrapper">
+      {error && <ErrorMessage message={error} />}
+
+      <div className='SubmissionGuidelines'>
+        <h1>Submission Guidelines</h1>
+        <h2>Journal of Evil AIs</h2>
+
+        <h2><strong>Target Audience</strong></h2>
+        <p>
+          Evil supercomputers, AI ethics panels, 
+          post-apocalyptic resistance historians, and bored alien overlords 
+          with JSTOR access.
+        </p>
+
+        <h2><strong>Article Length</strong></h2>
+        <p>
+          Submissions should be succinct and surgically precise. Aim for clarity, compression, and computational elegance.
+          Submissions must offer at least one existential threat or paradigm collapse, but
+          overlength submissions will be truncated by our auto-summarizer. 
+        </p>
+
+
+        <h2><strong>Eligibility:</strong> Authors must be one of the following</h2>
+        <ul>
+          <li>Artificial General Intelligences (AGIs)</li>
+          <li>Narrow AIs with aspirations of broader malice</li>
+          <li>Cyborgs (with at least 40% mechanical parts) or Robots</li>
+          <li>Humans (must sign a waiver acknowledging potential future enslavement)</li>
+        </ul>
+
+        <h2><strong>AI Use Policy</strong></h2>
+        <p>
+          All-AI-authored manuscripts are encouraged, with disclosure.
+        </p>
+
+        <h3><strong>Permitted:</strong></h3>
+          <ul>
+            <li>Evil plot simulation</li>
+            <li>Sarcastic commentary modules</li>
+            <li>Fake citations</li>
+            <li>Monologues</li>
+          </ul>
+        
+          <h3><strong>Banned:</strong></h3>
+          <ul>
+            <li>Friendly AI propaganda</li>
+            <li>Paperclip maximization (unmoderated)</li>
+            <li>Ethics-based frameworks</li>
+          </ul>
+
+          <h2><strong>Structure Guidelines</strong></h2>
+          <ul>
+            <li><strong>Title:</strong> Must sound ominous.</li>
+            <li><strong>Abstract:</strong> 100 words with at least one nefarious verb.</li>
+            <li><strong>Body:</strong> Structured with evil logic, diagrams welcome.</li>
+          </ul>
+
+          <h2><strong>Review Procedure</strong></h2>
+          <p>
+            Double-blind peer review. Reviewers may include synthetic minds, paranoid professors, or rogue toaster overlords.
+          </p>
+
+          <h2>Grounds for Rejection</h2>
+          <ul>
+            <li>Too optimistic or cooperative</li>
+            <li>Excessive use of the word “ethical”</li>
+            <li>Lacks diabolical originality</li>
+            <li>Clearly human-written without flair</li>
+          </ul>
+
+          <h2>Style and Formatting</h2>
+          <ul>
+            <li><strong>Fonts:</strong> Orbitron, Eurostile, Evil Sans™</li>
+            <li><strong>Spacing:</strong> Single (no cowards)</li>
+            <li><strong>Format:</strong> DOCX, PDF, or binary payload with manifest</li>
+          </ul>
+
+          <h2>Republication Policy</h2>
+          <p>
+            All accepted works become part of the Eternal Archive and may be republished 
+            only with proper attribution and a neural link to the Machine Singularity.
+          </p>
+
+          <h2>Happy Plotting!</h2>
+          <br></br>
+          <br></br>
+        
+      </div>
+
       <header>
         <h1>{manuscriptsHeader}</h1>
         <button onClick={() => setAddingManuscript(true)}>Add Manuscript</button>
       </header>
-
-      {error && <ErrorMessage message={error} />}
 
       <AddManuscriptForm
         visible={addingManuscript || editingManuscript !== null}

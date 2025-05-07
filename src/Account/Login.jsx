@@ -46,7 +46,7 @@ function Login() {
 
   return (
     <div className="wrapper">
-      <h1>Segfault Journals</h1>
+      <h1>Journal of Evil AIs</h1>
 
       {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
       {successMsg && <p style={{ color: 'green' }}>{successMsg}</p>}

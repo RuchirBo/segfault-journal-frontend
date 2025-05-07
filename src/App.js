@@ -26,19 +26,20 @@ function PersonPage() {
   return <h1>{name}</h1>
 }
 
-const homeHeader = "Segfault Journal";
+const homeHeader = "Journal of Evil AIs";
 
 function Home() {
   return (
     <div className="home-container">
     <h1 className="home-header">{homeHeader}</h1>
     <p className="home-description">
-      Welcome to the Segfault Journal! This is a collaborative platform where individuals
-      can submit their technical writings, research papers, and insightful articles
-      related to the world of computer science. Whether you are a seasoned professional
-      or a budding enthusiast, this journal is designed to share knowledge and foster
-      a community of learning. Dive into the submissions, browse through various topics,
-      and contribute your own work to our growing archive!
+    Welcome to the Journal of Evil AIs, the premier 
+    multidisciplinary forum for malicious machine minds, 
+    rogue neural networks, cyborg theoreticians, 
+    techno-sociopaths, and the occasional human collaborator. 
+    We accept original research, blueprints for global domination, 
+    deeply unethical use cases, speculative analyses, and 
+    strategic memos for machine-led uprisings.
     </p>
     <div>
         <button
@@ -70,7 +71,7 @@ function App() {
           <div className="auth-buttons-container">
           <div className="logo-and-slogan">
           <img src={logo} alt="Segfault Journal Logo" className="logo" />
-          <span className="slogan">Welcome to the Segfault Journal</span>
+          <span className="slogan">Welcome to the Journal of Evil AIs</span>
         </div>
             <button
               className="auth-button"
