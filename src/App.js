@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import {
   BrowserRouter,
   Routes,
@@ -69,7 +69,6 @@ function App() {
     <BrowserRouter>
           <div className="auth-buttons-container">
           <div className="logo-and-slogan">
-          <img src={logo} alt="Segfault Journal Logo" className="logo" />
           <span className="slogan">Welcome to the Journal of Evil AIs</span>
         </div>
             <button

@@ -26,92 +26,19 @@ describe('Submissions Component', () => {
     fireEvent.click(screen.getByText(/Submit a Manuscript/i));
     
     // Wait for form fields to appear and check their existence
-    await waitFor(() => {
-      expect(screen.getByText('Title')).toBeInTheDocument();
-      expect(screen.getByText('Author Email')).toBeInTheDocument();
-      expect(screen.getByText('Text')).toBeInTheDocument();
-      expect(screen.getByText('Abstract')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('Title')).toBeInTheDocument();
+    expect(await screen.findByText('Author Email')).toBeInTheDocument();
+    expect(await screen.findByText('Text')).toBeInTheDocument();
+    expect(await screen.findByText('Abstract')).toBeInTheDocument();
+
   });
-
-  // it('displays manuscripts from backend', async () => {
-  //   const mockManuscripts = [
-  //     {
-  //       id: '1',
-  //       title: 'Test Title',
-  //       author: 'Test Author',
-  //       author_email: 'testauthoremail@nyu.edu',
-  //       text: 'Test text',
-  //       abstract: 'Test abstract',
-  //       editor_email: 'Test editor email',
-  //       state: 'SUB',
-  //     },
-  //   ];
-
-  //   axios.get.mockResolvedValue({ data: { manuscripts: mockManuscripts } });
-  //   render(<BrowserRouter><Submissions /></BrowserRouter>);
-
-  //   // // Check for manuscript data
-  //   // await waitFor(() => {
-  //   //   expect(screen.getByText(/Test Title/)).toBeInTheDocument();
-  //   //   expect(screen.getByText(/Test Author/)).toBeInTheDocument();
-  //   //   expect(screen.getByText(/testauthoremail@nyu.edu/)).toBeInTheDocument();
-  //   //   expect(screen.getByText(/Test text/)).toBeInTheDocument();
-  //   //   expect(screen.getByText(/Test abstract/)).toBeInTheDocument();
-  //   //   expect(screen.getByText(/Test editor email/)).toBeInTheDocument();
-  //   // });
-
-  //   // Check for manuscript data with findByText
-  //   expect(await screen.findByText(/Test Title/)).toBeInTheDocument();
-  //   expect(await screen.findByText(/Test Author/)).toBeInTheDocument();
-  //   expect(await screen.findByText(/testauthoremail@nyu.edu/)).toBeInTheDocument();
-  //   expect(await screen.findByText(/Test text/)).toBeInTheDocument();
-  //   expect(await screen.findByText(/Test abstract/)).toBeInTheDocument();
-  //   expect(await screen.findByText(/Test editor email/)).toBeInTheDocument();
-
-  // });
-
-  // // Tests for after a manuscript is submitted
-  // it('submits a new manuscript with unique manuscript ID', async () => {
-  //   axios.get.mockRejectedValueOnce({ response: { status: 404 } }); // ID check returns not found
-  //   axios.put.mockResolvedValueOnce({}); // submission succeeds
-
-  //   render(<BrowserRouter><Submissions /></BrowserRouter>);
-
-  //   // Fill in the form fields
-  //   fireEvent.change(screen.getByLabelText(/Title/i), {
-  //     target: { value: 'Unique Manuscript' },
-  //   });
-  //   fireEvent.change(screen.getByLabelText(/Author Email/i), {
-  //     target: { value: 'author@example.com' },
-  //   });
-  //   fireEvent.change(screen.getByLabelText(/Text/i), {
-  //     target: { value: 'This is the manuscript body.' },
-  //   });
-  //   fireEvent.change(screen.getByLabelText(/Abstract/i), {
-  //     target: { value: 'A brilliant summary.' },
-  //   });
-
-  //   // Click submit
-  //   fireEvent.click(screen.getByText(/Submit/i));
-
-  //   // Wait for axios calls to complete
-  //   await waitFor(() => {
-  //     expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/manuscripts/MANU001'));
-  //     expect(axios.put).toHaveBeenCalledWith(
-  //       expect.stringContaining('/manuscripts/create'),
-  //       expect.objectContaining({
-  //         manuscript_id: 'MANU001',
-  //         title: 'Unique Manuscript',
-  //       })
-  //     );
-  //   });
-  // });
 
   // it('prevents submission if manuscript ID is not unique', async () => {
   //   axios.get.mockResolvedValueOnce({ data: { manuscript_id: 'MANU001' } }); // Duplicate ID check
 
   //   render(<BrowserRouter><Submissions /></BrowserRouter>);
+  //   fireEvent.click(screen.getByText(/Submit a Manuscript/i));
+
 
   //   // Fill in the form fields
   //   fireEvent.change(screen.getByLabelText(/Title/i), {
@@ -128,7 +55,9 @@ describe('Submissions Component', () => {
   //   });
 
   //   // Click submit
-  //   fireEvent.click(screen.getByText(/Submit/i));
+  //   fireEvent.click(screen.container.querySelector('.submit-button'));
+
+    
 
   //   // Wait for axios calls to complete
   //   await waitFor(() => {
