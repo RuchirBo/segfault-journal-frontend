@@ -5,7 +5,6 @@ import '../App.css';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [roleKey, setRoleKey] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -18,12 +17,11 @@ function Login() {
       const response = await fetch('http://127.0.0.1:8000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           email: username,
-          password: password,
-          role_key: roleKey
+          password: password
         }),
-        credentials: 'include',
       });
 
       if (response.ok) {
@@ -70,15 +68,6 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        />
-
-        <label htmlFor="roleKey">Role Key (if required)</label>
-        <input
-          type="text"
-          id="roleKey"
-          placeholder="Enter role key"
-          value={roleKey}
-          onChange={(e) => setRoleKey(e.target.value)}
         />
 
         <button type="submit">Log in</button>
