@@ -41,8 +41,18 @@ function Profile() {
     
   
     return (
-      <div className="profile">
-        <h2>User Profile</h2>
+      <div
+        className="wrapper"
+        style={{
+          border: '1px solid #ccc',
+          padding: '20px',
+          borderRadius: '10px',
+          maxWidth: '400px',
+          margin: '20px auto',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        <h3>User Profile</h3>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Role:</strong> {user.role}</p>
       </div>
