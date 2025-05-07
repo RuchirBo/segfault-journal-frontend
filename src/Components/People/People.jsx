@@ -135,8 +135,8 @@ function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
 
   return (
     <div>
-      <Link to={name}>
         <div className="person-container">
+        <Link to={name}> </Link>
           <h2>{name}</h2>
           <p>Email: {email}</p>
           <p><strong>Affiliation:</strong> {affiliation}</p>
@@ -146,7 +146,6 @@ function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
             }
           </ul>
         </div>
-      </Link>
       <button onClick={deletePerson}>Delete Person</button>
       <button onClick={toggleUpdateForm}>Update Person</button>
       {showUpdateForm && (
