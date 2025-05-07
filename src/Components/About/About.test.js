@@ -34,6 +34,6 @@ describe('About component', () => {
     test('renders a "No ABOUT text found" message if no "ABOUT" text is found', async () => {
         axios.get.mockResolvedValueOnce({ data: {} });
         render(<About />);
-        await waitFor(() => expect(screen.getByText(/No "About" text found/i)).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText(/No ABOUT text found/i)).toBeInTheDocument());
     });
 });
