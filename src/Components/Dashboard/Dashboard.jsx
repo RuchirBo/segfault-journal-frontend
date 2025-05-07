@@ -155,7 +155,6 @@ function EditManuscriptForm({
   const [text, setText] = useState(editingManuscript.text);
   const [abstract, setAbstract] = useState(editingManuscript.abstract);
   const [editor_email, setEditorEmail] = useState(editingManuscript.editor_email);  
-  const [manuscriptId, setManuscriptId] = useState(editingManuscript.id);
 
   useEffect(() => {
     if (editingManuscript) {
@@ -164,7 +163,6 @@ function EditManuscriptForm({
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
       setEditorEmail(editingManuscript.editor_email);
-      setManuscriptId(editingManuscript.manuscript_id);
     }
   }, [editingManuscript]);
 
@@ -173,12 +171,11 @@ function EditManuscriptForm({
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
   const changeEditorEmail = (event) => setEditorEmail(event.target.value);
-  const changeManuscriptId = (e) => setManuscriptId(e.target.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!title || !author_email || !text || !abstract || !editor_email || !manuscriptId) {
+    if (!title || !author_email || !text || !abstract || !editor_email) {
       setError('All fields are required to add a manuscript.');
       return;
     }
@@ -189,7 +186,6 @@ function EditManuscriptForm({
       text: text,
       abstract: abstract,
       editor_email: editor_email,
-      manuscript_id: manuscriptId,
     }
 
     const resetManuscriptForm = () => {
@@ -198,7 +194,6 @@ function EditManuscriptForm({
       setText('');
       setAbstract('');
       setEditorEmail('');
-      setManuscriptId('');
     };
 
     if (editingManuscript) {
@@ -259,8 +254,6 @@ function EditManuscriptForm({
 
       <label htmlFor="editor">Editor</label>
       <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
-      <label htmlFor="manuscript_id">Manuscript ID</label>
-      <input required type="text" id="manuscript_id" value={manuscriptId} onChange={changeManuscriptId} />
 
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={handleSubmit}>
@@ -279,62 +272,6 @@ EditManuscriptForm.propTypes = {
   setEditingManuscript: propTypes.func.isRequired,
 };
 
-function AddManuscriptForm({ visible, cancel, fetchManu, setError }) {
-  const [title, setTitle] = useState('');
-  const [author_email, setAuthorEmail] = useState('');
-  const [text, setText] = useState('');
-  const [abstract, setAbstract] = useState('');
-  const [editor_email, setEditorEmail] = useState('');
-  const [manuscriptId, setManuscriptId] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title || !author_email || !text || !abstract || !editor_email || !manuscriptId) {
-      setError('All fields are required.');
-      return;
-    }
-    const payload = {
-      title,
-      author_email,
-      text,
-      abstract,
-      editor_email,
-      manuscript_id: manuscriptId
-    };
-    axios.put(MANU_CREATE_ENDPOINT, payload)
-      .then(() => {
-        fetchManu();
-        cancel();
-        setTitle('');
-        setAuthorEmail('');
-        setText('');
-        setAbstract('');
-        setEditorEmail('');
-        setManuscriptId('');
-      })
-      .catch(err => setError(err.response?.data?.message || err.message));
-  };
-
-  if (!visible) return null;
-  return (
-    <form className="manu-form">
-      <label>Title<input type="text" value={title} onChange={e => setTitle(e.target.value)} /></label>
-      <label>Author Email<input type="text" value={author_email} onChange={e => setAuthorEmail(e.target.value)} /></label>
-      <label>Text<textarea rows="6" value={text} onChange={e => setText(e.target.value)} /></label>
-      <label>Abstract<input type="text" value={abstract} onChange={e => setAbstract(e.target.value)} /></label>
-      <label>Editor Email<input type="text" value={editor_email} onChange={e => setEditorEmail(e.target.value)} /></label>
-      <label>Manuscript ID<input type="text" value={manuscriptId} onChange={e => setManuscriptId(e.target.value)} /></label>
-      <button type="button" onClick={cancel}>Cancel</button>
-      <button type="submit" onClick={handleSubmit}>Submit</button>
-    </form>
-  );
-}
-AddManuscriptForm.propTypes = {
-  visible: propTypes.bool.isRequired,
-  cancel: propTypes.func.isRequired,
-  fetchManu: propTypes.func.isRequired,
-  setError: propTypes.func.isRequired,
-};
 
 function Manuscripts() {
   const [manuscripts, setManuscripts] = useState([]);
@@ -342,7 +279,6 @@ function Manuscripts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingManuscript, setEditingManuscript] = useState(null);
   const [referees, setReferees] = useState([]);
-  const [addingManuscript, setAddingManuscript] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
 
 
@@ -433,18 +369,11 @@ function Manuscripts() {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ margin: "10px 0", width: "100%", padding: "8px" }}
         />
-        <button onClick={() => setAddingManuscript(true)}>
-          Add Manuscript
-        </button>
+       
       </header>
 
       {error && <ErrorMessage message={error} />}
-      <AddManuscriptForm
-          visible={addingManuscript}
-          cancel={() => setAddingManuscript(false)}
-          fetchManu={fetchManu}
-          setError={setError}
-      />
+      
       <table className="manuscript-table">
         <thead>
           <tr>
@@ -525,14 +454,21 @@ function Manuscripts() {
                     />
                     <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
-                  <td> 
-                  {isEditor ? (
-                    <button onClick={() => setEditingManuscript(manuscript)} style={{ fontSize: '10px' }}>
-                      Edit Manuscript
-                    </button>
-                  ) : (
-                    <p>You do not have permission to edit this manuscript.</p>
-                  )}
+                  <td>
+                    {isEditor ? (
+                      manuscript.state !== 'PUB' ? (
+                        <button
+                          onClick={() => setEditingManuscript(manuscript)}
+                          style={{ fontSize: '10px' }}
+                        >
+                          Edit Manuscript
+                        </button>
+                      ) : (
+                        <p>Cannot edit a published manuscript.</p>
+                      )
+                    ) : (
+                      <p>You do not have permission to edit this manuscript.</p>
+                    )}
                   </td>
                   <td>
                   {isEditor ? (
