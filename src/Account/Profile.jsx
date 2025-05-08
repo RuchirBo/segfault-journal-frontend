@@ -26,7 +26,7 @@ function Profile() {
     // only attempt logout if someone is actually logged in
     if (user.email === 'Guest') return;
 
-    await fetch(`${BACKEND_URL}/auth/user`, {
+    await fetch(`${BACKEND_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     });
