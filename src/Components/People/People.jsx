@@ -31,7 +31,7 @@ function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
   useEffect(() => {
     const fetchUserAndCheckIfEditor = async () => {
       try {
-        const userResponse = await fetch('http://127.0.0.1:8000/auth/user', {
+        const userResponse = await fetch(`${BACKEND_URL}/auth/user`, {
           method: 'GET',
           credentials: 'include',
           headers: {

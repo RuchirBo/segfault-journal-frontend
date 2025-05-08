@@ -9,7 +9,7 @@ function Profile() {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/auth/user', {
+      const res = await fetch(`${BACKEND_URL}/auth/user`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -25,7 +25,7 @@ function Profile() {
     // only attempt logout if someone is actually logged in
     if (user.email === 'Guest') return;
 
-    await fetch('http://127.0.0.1:8000/auth/logout', {
+    await fetch(`${BACKEND_URL}/auth/user`, {
       method: 'POST',
       credentials: 'include',
     });
