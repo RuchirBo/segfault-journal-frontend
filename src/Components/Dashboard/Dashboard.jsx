@@ -11,7 +11,7 @@ const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
-const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
+// const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 
 
@@ -366,18 +366,6 @@ function Manuscripts() {
       });
   };
 
-  const deleteManuscript = (manuscript_to_delete) => {
-    console.log("Manuscript to delete:", manuscript_to_delete.manuscript_id);
-    axios
-    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
-    .then(() => {
-      fetchManu();
-    })
-    .catch((error) => {
-      const errorMessage = error.response?.data?.message || error.message;
-      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
-    });
-  };
 
   useEffect(fetchManu, []);
 
@@ -450,7 +438,6 @@ function Manuscripts() {
             <th>State</th>
             <th>Actions</th>
             <th>Edit Manuscript</th>
-            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -485,11 +472,6 @@ function Manuscripts() {
                         ? <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
                         : <p>Cannot edit a published manuscript.</p>)
                     : <p>No permission to edit.</p>}
-                </td>
-                <td>
-                  {isEditor
-                    ? <button onClick={() => deleteManuscript(manuscript)}>Delete</button>
-                    : <p>No permission to delete.</p>}
                 </td>
               </tr>
             ))
