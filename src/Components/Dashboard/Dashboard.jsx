@@ -62,7 +62,7 @@ const filterActionsByRole = (state, roles, isOwner) => {
     //return getAvailableActions(state).filter(action => action === "WITHDRAW" || action === "DON");
     return getAvailableActions(state)
       .filter(action =>
-        action === "DON" ||
+        action === "DON" && isOwner ||
         (action === "WITHDRAW" && isOwner)
       );
   }
