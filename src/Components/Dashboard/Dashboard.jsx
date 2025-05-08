@@ -11,7 +11,7 @@ const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
-// const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
+const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 
 
@@ -348,6 +348,18 @@ function Manuscripts() {
       });
   };
 
+  const deleteManuscript = (manuscript_to_delete) => {
+    console.log("Manuscript to delete:", manuscript_to_delete.manuscript_id);
+    axios
+    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
+    .then(() => {
+      fetchManu();
+    })
+    .catch((error) => {
+      const errorMessage = error.response?.data?.message || error.message;
+      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
+    });
+  };
 
   useEffect(fetchManu, []);
 
@@ -420,43 +432,116 @@ function Manuscripts() {
             <th>State</th>
             <th>Actions</th>
             <th>Edit Manuscript</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
-          {visibleManuscripts.length > 0 ? (
-            visibleManuscripts.map(manuscript => (
-              <tr key={manuscript.manuscript_id}>
-                <td>{manuscript.title}</td>
-                <td>{manuscript.author}</td>
-                <td>{manuscript.author_email}</td>
-                <td><CollapsibleText text={manuscript.text} limit={50}/></td>
-                <td>{manuscript.abstract}</td>
-                <td>{manuscript.editor_email}</td>
-                <td>{(manuscript.referees||[]).join(", ") || "—"}</td>
-                <td className="state-container">
-                  <div className="state">{manuscript.state}</div>
-                  <div className="state-description">{manuscript.state_description}</div>
+          {
+            manuscripts
+            .filter((manuscript) => manuscript.state !== 'REJ')
+            .filter((manuscript) => {
+            const search = searchQuery.toLowerCase();
+            return (
+              manuscript.title.toLowerCase().includes(search) ||
+              manuscript.author.toLowerCase().includes(search) ||
+              manuscript.author_email.toLowerCase().includes(search) ||
+              manuscript.text.toLowerCase().includes(search) ||
+              manuscript.abstract.toLowerCase().includes(search) ||
+              manuscript.editor_email.toLowerCase().includes(search) ||
+              (manuscript.referees || [])
+              .join(', ')
+              .toLowerCase()
+              .includes(search) ||
+              manuscript.state.toLowerCase().includes(search)
+            );
+          }).length > 0 ? (
+            manuscripts
+              .filter((manuscript) => manuscript.state !== 'REJ')
+              .filter((manuscript) => {
+                const search = searchQuery.toLowerCase();
+                return (
+                  manuscript.title.toLowerCase().includes(search) ||
+                  manuscript.author.toLowerCase().includes(search) ||
+                  manuscript.author_email.toLowerCase().includes(search) ||
+                  manuscript.text.toLowerCase().includes(search) ||
+                  manuscript.abstract.toLowerCase().includes(search) ||
+                  manuscript.editor_email.toLowerCase().includes(search) ||
+                  (manuscript.referees || [])
+                  .join(', ')
+                  .toLowerCase()
+                  .includes(search) ||
+                  manuscript.state.toLowerCase().includes(search)
+                );
+              })
+              .map((manuscript) => (
+                <tr key={manuscript.manuscript_id}>
+                  <td>{manuscript.title}</td>
+                  <td>{manuscript.author}</td>
+                  <td>{manuscript.author_email}</td>
+                  <td>{ <CollapsibleText text={manuscript.text} limit={50} />}</td>
+                  <td>{manuscript.abstract}</td>
+                  <td>{manuscript.editor_email}</td>
+                  <td>
+                  {manuscript.referees && manuscript.referees.length > 0
+                    ? manuscript.referees.join(', ')
+                    : '—'}
+                  </td>
+                  <td className="state-container">
+                    <div className="state">{manuscript.state}</div>
+                    <div className="state-description">{manuscript.state_description}</div>
+                  </td>
+                  <td className="actions-list">
+                    <UpdateActionButton
+                      manuscript={manuscript}
+                      refreshManu={fetchManu}
+                      referees={referees}
+                      setError={setError}
+                      userRoles={userRoles}
+                      currentUserEmail={currentUserEmail}
+                    />
+                    <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
+                  </td>
+                  <td>
+                    {isEditor ? (
+                      manuscript.state !== 'PUB' ? (
+                        <button
+                          onClick={() => setEditingManuscript(manuscript)}
+                          style={{ fontSize: '10px' }}
+                        >
+                          Edit Manuscript
+                        </button>
+                      ) : (
+                        <p>Cannot edit a published manuscript.</p>
+                      )
+                    ) : (
+                      <p>You do not have permission to edit this manuscript.</p>
+                    )}
+                  </td>
+                  <td>
+                  {isEditor ? (
+                    <button
+                      onClick={() =>
+                        deleteManuscript({
+                          title: manuscript.title,
+                          author: manuscript.author,
+                          author_email: manuscript.author_email,
+                          text: manuscript.text,
+                          abstract: manuscript.abstract,
+                          editor_email: manuscript.editor_email,
+                          manuscript_id: manuscript.manuscript_id,
+                        })
+                      }
+                      style={{ fontSize: '10px' }}
+                    >
+                      Delete Manuscript
+                    </button>
+                  ) : (
+                    <p>You do not have permission to delete this manuscript.</p>
+                  )}
                 </td>
-                <td className="actions-list">
-                  <UpdateActionButton
-                    manuscript={manuscript}
-                    refreshManu={fetchManu}
-                    referees={referees}
-                    setError={setError}
-                    userRoles={userRoles}
-                    currentUserEmail={currentUserEmail}
-                  />
-                  <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
-                </td>
-                <td>
-                  {isEditor
-                    ? (manuscript.state !== 'PUB'
-                        ? <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
-                        : <p>Cannot edit a published manuscript.</p>)
-                    : <p>No permission to edit.</p>}
-                </td>
-              </tr>
-            ))
+                </tr> 
+              ))
+          
           ) : (
             <tr>
               <td colSpan="8">No manuscripts found.</td>
