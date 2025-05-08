@@ -6,97 +6,8 @@ import { Link } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
 
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
-const PEOPLE_CREATE_ENDPOINT = `${BACKEND_URL}/people/create`;
 const PEOPLE_UPDATE_ENDPOINT = `${BACKEND_URL}/people/update`;
 const ROLES_ENDPOINT = `${BACKEND_URL}/roles`
-
-function AddPersonForm({
-  visible,
-  cancel,
-  fetchPeople,
-  setError,
-  roleOptions,
-}) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState([]);
-  const [affiliation, setAffiliation] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const changeName = (event) => { setName(event.target.value); };
-  const changeEmail = (event) => { setEmail(event.target.value); };
-  const changeRole = (event) => {
-    const selectedRoles = Array.from(event.target.selectedOptions, option => option.value);
-    setRole(selectedRoles);
-  };  
-  const changeAffiliation = (event) => { setAffiliation(event.target.value); };
-
-  const addPerson = (event) => {
-    event.preventDefault();
-    const newPerson = {
-      name: name,
-      email: email,
-      roles: role, 
-      affiliation: affiliation,
-    }
-    axios.put(PEOPLE_CREATE_ENDPOINT, newPerson)
-      .then(() => {
-        fetchPeople();
-        setSuccessMessage('Person successfully added');
-        setTimeout(() => setSuccessMessage(''), 3000);
-      })
-      .catch((error) => { 
-        const errorMessage = error.response?.data?.message || error.message;
-        setError(`There was a problem adding the person. ${errorMessage}`); 
-      });
-  };
-  
-
-  if (!visible) return null;
-  return (
-    <form>
-      <label htmlFor="name">
-        Name
-      </label>
-      <input required type="text" id="name" value={name} onChange={changeName} />
-      <label htmlFor="email">
-        Email
-      </label>
-      <input required type="text" id="email" onChange={changeEmail} />
-
-      <label htmlFor="affiliation">
-        Affiliation
-      </label>
-      <input required type="text" id="affiliation" onChange={changeAffiliation} />
-
-      <label htmlFor="roles">Roles</label>
-      <select multiple id="role" value={role} onChange={changeRole} required>
-        {Object.keys(roleOptions).map((code) => (
-          <option key={code} value={code}>
-            {roleOptions[code]}
-          </option>
-        ))}
-      </select>
-
-      <button type="button" onClick={cancel}>Cancel</button>
-      <button type="submit" onClick={addPerson}>Submit</button>
-
-      {successMessage && (
-        <div className="success-popup">
-          {successMessage}
-        </div>
-      )}
-
-    </form>
-  );
-}
-AddPersonForm.propTypes = {
-  visible: propTypes.bool.isRequired,
-  cancel: propTypes.func.isRequired,
-  fetchPeople: propTypes.func.isRequired,
-  setError: propTypes.func.isRequired,
-  roleOptions: propTypes.object.isRequired,
-};
 
 function ErrorMessage({ message }) {
   return (
@@ -115,6 +26,41 @@ const peopleHeader = "View All People";
 function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
   const { name, email, roles, affiliation } = person;
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
+
+  useEffect(() => {
+    const fetchUserAndCheckIfEditor = async () => {
+      try {
+        const userResponse = await fetch('http://127.0.0.1:8000/auth/user', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('Not logged in');
+        }
+
+        const userData = await userResponse.json();
+        const isEditorResponse = await axios.get(`${BACKEND_URL}/people/editors`, {
+          withCredentials: true,
+        });
+    
+        console.log('Editors Data:', isEditorResponse.data.editors);
+
+        const editorsData = isEditorResponse.data.editors
+
+        const editorEmails = editorsData.map((editor) => editor.email);
+        setIsEditor(editorEmails.includes(userData.email));
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchUserAndCheckIfEditor();
+  }, []);
 
   const deletePerson = () => {
     axios.delete(`${PEOPLE_READ_ENDPOINT}/${email}/delete`)
@@ -146,8 +92,12 @@ function Person({ person, fetchPeople, setError, roleMap, setSuccessMessage }) {
             }
           </ul>
         </div>
-      <button onClick={deletePerson}>Delete Person</button>
-      <button onClick={toggleUpdateForm}>Update Person</button>
+        {isEditor && (
+        <>
+          <button onClick={deletePerson}>Delete Person</button>
+          <button onClick={toggleUpdateForm}>Update Person</button>
+        </>
+      )}
       {showUpdateForm && (
         <UpdatePersonForm
           visible={showUpdateForm}
@@ -266,7 +216,6 @@ function groupPeopleByRole(people) {
 function People() {
   const [error, setError] = useState('');
   const [people, setPeople] = useState([]);
-  const [addingPerson, setAddingPerson] = useState(false);
   const [roleMap, setRoleMap] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -283,8 +232,6 @@ function People() {
       .catch((error) => { setError(`There was a problem getting roles. ${error}`); });
   }
   
-  const showAddPersonForm = () => { setAddingPerson(true); };
-  const hideAddPersonForm = () => { setAddingPerson(false); };
 
   useEffect(fetchPeople, []);
   useEffect(getRoles,[]);
@@ -312,19 +259,8 @@ function People() {
           onChange={(e) => setSearchQuery(e.target.value)}
           style = {{margin: "10px 0", width: "100%", padding: "8px"}}
         />
-        <button type="button" onClick={showAddPersonForm}>
-          Add a person
-        </button>
+       
       </header>
-      
-      <AddPersonForm
-        visible={addingPerson}
-        cancel={hideAddPersonForm}
-        fetchPeople={fetchPeople}
-        setError={setError}
-        roleOptions={roleMap}
-        setSuccessMessage={setSuccessMessage}
-      />
       
       {successMessage && (
         <div className="success-popup">
