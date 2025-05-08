@@ -190,49 +190,39 @@ function EditManuscriptForm({
   setEditingManuscript,
 }) {
   const [title, setTitle] = useState(editingManuscript.title);
-  const [author_email, setAuthorEmail] = useState(editingManuscript.author_email);
   const [text, setText] = useState(editingManuscript.text);
-  const [abstract, setAbstract] = useState(editingManuscript.abstract);
-  const [editor_email, setEditorEmail] = useState(editingManuscript.editor_email);  
+  const [abstract, setAbstract] = useState(editingManuscript.abstract); 
 
   useEffect(() => {
     if (editingManuscript) {
       setTitle(editingManuscript.title);
-      setAuthorEmail(editingManuscript.author_email);
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
-      setEditorEmail(editingManuscript.editor_email);
     }
   }, [editingManuscript]);
 
   const changeTitle = (event) => setTitle(event.target.value);
-  const changeAuthorEmail = (event) => setAuthorEmail(event.target.value);
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
-  const changeEditorEmail = (event) => setEditorEmail(event.target.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!title || !author_email || !text || !abstract || !editor_email) {
+    if (!title  || !text || !abstract ) {
       setError('All fields are required to add a manuscript.');
       return;
     }
 
     const newManuscript = {
       title: title,
-      author_email: author_email,
       text: text,
       abstract: abstract,
-      editor_email: editor_email,
     }
 
     const resetManuscriptForm = () => {
       setTitle('');
-      setAuthorEmail('');
       setText('');
       setAbstract('');
-      setEditorEmail('');
     };
 
     if (editingManuscript) {
@@ -275,9 +265,6 @@ function EditManuscriptForm({
       <label htmlFor="title">Title</label>
       <input required type="text" id="title" value={title} onChange={changeTitle} />
 
-      <label htmlFor="author_email">Author Email</label>
-      <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
-
       <label htmlFor="text">Text</label>
       <textarea 
         required 
@@ -290,9 +277,6 @@ function EditManuscriptForm({
 
       <label htmlFor="abstract">Abstract</label>
       <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
-
-      <label htmlFor="editor">Editor</label>
-      <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
 
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={handleSubmit}>
@@ -352,7 +336,7 @@ function Manuscripts() {
   useEffect(() => {
     const fetchUserAndCheckIfEditor = async () => {
       try {
-        const userResponse = await fetch(`${BACKEND_URL}/auth/login`, {
+        const userResponse = await fetch('http://127.0.0.1:8000/auth/user', {
           method: 'GET',
           credentials: 'include',
           headers: {
