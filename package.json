@@ -51,6 +51,9 @@
   },
   "jest": {
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"]
+},
+  "engines": {
+    "node": "20.x"
 }
 }
 
