@@ -11,7 +11,6 @@ const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
-const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 
 
@@ -348,25 +347,12 @@ function Manuscripts() {
       });
   };
 
-  const deleteManuscript = (manuscript_to_delete) => {
-    console.log("Manuscript to delete:", manuscript_to_delete.manuscript_id);
-    axios
-    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
-    .then(() => {
-      fetchManu();
-    })
-    .catch((error) => {
-      const errorMessage = error.response?.data?.message || error.message;
-      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
-    });
-  };
-
   useEffect(fetchManu, []);
 
   useEffect(() => {
     const fetchUserAndCheckIfEditor = async () => {
       try {
-        const userResponse = await fetch('http://127.0.0.1:8000/auth/user', {
+        const userResponse = await fetch(`${BACKEND_URL}/auth/login`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -432,7 +418,6 @@ function Manuscripts() {
             <th>State</th>
             <th>Actions</th>
             <th>Edit Manuscript</th>
-            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -517,28 +502,6 @@ function Manuscripts() {
                       <p>You do not have permission to edit this manuscript.</p>
                     )}
                   </td>
-                  <td>
-                  {isEditor ? (
-                    <button
-                      onClick={() =>
-                        deleteManuscript({
-                          title: manuscript.title,
-                          author: manuscript.author,
-                          author_email: manuscript.author_email,
-                          text: manuscript.text,
-                          abstract: manuscript.abstract,
-                          editor_email: manuscript.editor_email,
-                          manuscript_id: manuscript.manuscript_id,
-                        })
-                      }
-                      style={{ fontSize: '10px' }}
-                    >
-                      Delete Manuscript
-                    </button>
-                  ) : (
-                    <p>You do not have permission to delete this manuscript.</p>
-                  )}
-                </td>
                 </tr> 
               ))
           
