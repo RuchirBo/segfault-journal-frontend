@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BACKEND_URL } from '../../constants';
+import { BACKEND_URL } from '../constants';
 
 function Profile() {
   const [user, setUser] = useState({ email: 'Guest', role: 'Guest' });
