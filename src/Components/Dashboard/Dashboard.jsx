@@ -48,10 +48,12 @@ const getAvailableActions = (state) => availableActionsMap[state] || [];
 const filterActionsByRole = (state, roles) => {
 
   const hasEditorRole = roles.includes("EDITOR") || roles.includes("ED");
+  const hasMERole = roles.includes("MANAGING EDITOR") || roles.includes("ME")
+  const hasCERole = roles.includes("CONSULTING EDITOR") || roles.includes("CE")
   const hasAuthorRole = roles.includes("AUTHOR") || roles.includes("AU");
   const hasRefereeRole = roles.includes("REFEREE") || roles.includes("RE");
   
-  if (hasEditorRole) {
+  if (hasEditorRole || hasMERole || hasCERole) {
     console.log(roles)
     return getAvailableActions(state).filter(action => action !== "WITHDRAW" && action !== "SUBREV");
   }
