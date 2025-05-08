@@ -11,7 +11,6 @@ const MANU_READ_ENDPOINT = `${BACKEND_URL}/manuscripts`;
 const MANU_RECEIVE_ACTION_ENDPOINT = `${BACKEND_URL}/manuscripts/receive_action`;
 const MANU_CREATE_ENDPOINT = `${BACKEND_URL}/manuscripts/create`;
 const MANU_UPDATE_ENDPOINT = `${BACKEND_URL}/manuscripts/update`;
-const MANU_DELETE_ENDPOINT = `${BACKEND_URL}/manuscripts/delete`;
 const PEOPLE_READ_ENDPOINT = `${BACKEND_URL}/people`;
 
 
@@ -191,49 +190,39 @@ function EditManuscriptForm({
   setEditingManuscript,
 }) {
   const [title, setTitle] = useState(editingManuscript.title);
-  const [author_email, setAuthorEmail] = useState(editingManuscript.author_email);
   const [text, setText] = useState(editingManuscript.text);
-  const [abstract, setAbstract] = useState(editingManuscript.abstract);
-  const [editor_email, setEditorEmail] = useState(editingManuscript.editor_email);  
+  const [abstract, setAbstract] = useState(editingManuscript.abstract); 
 
   useEffect(() => {
     if (editingManuscript) {
       setTitle(editingManuscript.title);
-      setAuthorEmail(editingManuscript.author_email);
       setText(editingManuscript.text);
       setAbstract(editingManuscript.abstract);
-      setEditorEmail(editingManuscript.editor_email);
     }
   }, [editingManuscript]);
 
   const changeTitle = (event) => setTitle(event.target.value);
-  const changeAuthorEmail = (event) => setAuthorEmail(event.target.value);
   const changeText = (event) => setText(event.target.value);
   const changeAbstract = (event) => setAbstract(event.target.value);
-  const changeEditorEmail = (event) => setEditorEmail(event.target.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!title || !author_email || !text || !abstract || !editor_email) {
+    if (!title || !text || !abstract) {
       setError('All fields are required to add a manuscript.');
       return;
     }
 
     const newManuscript = {
       title: title,
-      author_email: author_email,
       text: text,
       abstract: abstract,
-      editor_email: editor_email,
     }
 
     const resetManuscriptForm = () => {
       setTitle('');
-      setAuthorEmail('');
       setText('');
       setAbstract('');
-      setEditorEmail('');
     };
 
     if (editingManuscript) {
@@ -276,9 +265,6 @@ function EditManuscriptForm({
       <label htmlFor="title">Title</label>
       <input required type="text" id="title" value={title} onChange={changeTitle} />
 
-      <label htmlFor="author_email">Author Email</label>
-      <input required type="text" id="author_email" value={author_email} onChange={changeAuthorEmail} />
-
       <label htmlFor="text">Text</label>
       <textarea 
         required 
@@ -292,8 +278,6 @@ function EditManuscriptForm({
       <label htmlFor="abstract">Abstract</label>
       <input required type="text" id="abstract" value={abstract} onChange={changeAbstract} />
 
-      <label htmlFor="editor">Editor</label>
-      <input required type="text" id="editor" value={editor_email} onChange={changeEditorEmail} />
 
       <button type="button" onClick={cancel}>Cancel</button>
       <button type="submit" onClick={handleSubmit}>
@@ -346,19 +330,6 @@ function Manuscripts() {
       .catch((error) => {
         setError(`There was a problem retrieving the list of manuscripts. ${error}`);
       });
-  };
-
-  const deleteManuscript = (manuscript_to_delete) => {
-    console.log("Manuscript to delete:", manuscript_to_delete.manuscript_id);
-    axios
-    .delete(MANU_DELETE_ENDPOINT, {data: manuscript_to_delete})
-    .then(() => {
-      fetchManu();
-    })
-    .catch((error) => {
-      const errorMessage = error.response?.data?.message || error.message;
-      setError(`There was a problem deleting the manuscript. ${errorMessage}`);
-    });
   };
 
   useEffect(fetchManu, []);
@@ -432,7 +403,6 @@ function Manuscripts() {
             <th>State</th>
             <th>Actions</th>
             <th>Edit Manuscript</th>
-            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -517,28 +487,6 @@ function Manuscripts() {
                       <p>You do not have permission to edit this manuscript.</p>
                     )}
                   </td>
-                  <td>
-                  {isEditor ? (
-                    <button
-                      onClick={() =>
-                        deleteManuscript({
-                          title: manuscript.title,
-                          author: manuscript.author,
-                          author_email: manuscript.author_email,
-                          text: manuscript.text,
-                          abstract: manuscript.abstract,
-                          editor_email: manuscript.editor_email,
-                          manuscript_id: manuscript.manuscript_id,
-                        })
-                      }
-                      style={{ fontSize: '10px' }}
-                    >
-                      Delete Manuscript
-                    </button>
-                  ) : (
-                    <p>You do not have permission to delete this manuscript.</p>
-                  )}
-                </td>
                 </tr> 
               ))
           
