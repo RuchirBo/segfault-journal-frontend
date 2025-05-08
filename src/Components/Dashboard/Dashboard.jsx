@@ -322,6 +322,24 @@ function Manuscripts() {
   const [isEditor, setIsEditor] = useState(false);
   const [userRoles, setUserRoles] = useState([]);
   const [currentUserEmail, setCurrentUserEmail] = useState('');
+  
+  const HIDDEN_STATES = ["PUB", "REJ", "WITH"];
+
+  const visibleManuscripts = manuscripts
+    .filter(m => !HIDDEN_STATES.includes(m.state))
+    .filter(m => {
+      const s = searchQuery.toLowerCase();
+      return (
+        m.title.toLowerCase().includes(s) ||
+        m.author.toLowerCase().includes(s) ||
+        m.author_email.toLowerCase().includes(s) ||
+        m.text.toLowerCase().includes(s) ||
+        m.abstract.toLowerCase().includes(s) ||
+        m.editor_email.toLowerCase().includes(s) ||
+        (m.referees || []).join(", ").toLowerCase().includes(s) ||
+        m.state.toLowerCase().includes(s)
+      );
+    });
 
   useEffect(() => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -436,119 +454,52 @@ function Manuscripts() {
           </tr>
         </thead>
         <tbody>
-          {
-            manuscripts
-            .filter((manuscript) => manuscript.state !== 'REJ')
-            .filter((manuscript) => {
-            const search = searchQuery.toLowerCase();
-            return (
-              manuscript.title.toLowerCase().includes(search) ||
-              manuscript.author.toLowerCase().includes(search) ||
-              manuscript.author_email.toLowerCase().includes(search) ||
-              manuscript.text.toLowerCase().includes(search) ||
-              manuscript.abstract.toLowerCase().includes(search) ||
-              manuscript.editor_email.toLowerCase().includes(search) ||
-              (manuscript.referees || [])
-              .join(', ')
-              .toLowerCase()
-              .includes(search) ||
-              manuscript.state.toLowerCase().includes(search)
-            );
-          }).length > 0 ? (
-            manuscripts
-              .filter((manuscript) => manuscript.state !== 'REJ')
-              .filter((manuscript) => {
-                const search = searchQuery.toLowerCase();
-                return (
-                  manuscript.title.toLowerCase().includes(search) ||
-                  manuscript.author.toLowerCase().includes(search) ||
-                  manuscript.author_email.toLowerCase().includes(search) ||
-                  manuscript.text.toLowerCase().includes(search) ||
-                  manuscript.abstract.toLowerCase().includes(search) ||
-                  manuscript.editor_email.toLowerCase().includes(search) ||
-                  (manuscript.referees || [])
-                  .join(', ')
-                  .toLowerCase()
-                  .includes(search) ||
-                  manuscript.state.toLowerCase().includes(search)
-                );
-              })
-              .map((manuscript) => (
-                <tr key={manuscript.manuscript_id}>
-                  <td>{manuscript.title}</td>
-                  <td>{manuscript.author}</td>
-                  <td>{manuscript.author_email}</td>
-                  <td>{ <CollapsibleText text={manuscript.text} limit={50} />}</td>
-                  <td>{manuscript.abstract}</td>
-                  <td>{manuscript.editor_email}</td>
-                  <td>
-                  {manuscript.referees && manuscript.referees.length > 0
-                    ? manuscript.referees.join(', ')
-                    : '—'}
-                  </td>
-                  <td className="state-container">
-                    <div className="state">{manuscript.state}</div>
-                    <div className="state-description">{manuscript.state_description}</div>
-                  </td>
-                  <td className="actions-list">
-                    <UpdateActionButton
-                      manuscript={manuscript}
-                      refreshManu={fetchManu}
-                      referees={referees}
-                      setError={setError}
-                      userRoles={userRoles}
-                      currentUserEmail={currentUserEmail}
-                    />
-                    <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
-                  </td>
-                  <td>
-                    {isEditor ? (
-                      manuscript.state !== 'PUB' ? (
-                        <button
-                          onClick={() => setEditingManuscript(manuscript)}
-                          style={{ fontSize: '10px' }}
-                        >
-                          Edit Manuscript
-                        </button>
-                      ) : (
-                        <p>Cannot edit a published manuscript.</p>
-                      )
-                    ) : (
-                      <p>You do not have permission to edit this manuscript.</p>
-                    )}
-                  </td>
-                  <td>
-                  {isEditor ? (
-                    <button
-                      onClick={() =>
-                        deleteManuscript({
-                          title: manuscript.title,
-                          author: manuscript.author,
-                          author_email: manuscript.author_email,
-                          text: manuscript.text,
-                          abstract: manuscript.abstract,
-                          editor_email: manuscript.editor_email,
-                          manuscript_id: manuscript.manuscript_id,
-                        })
-                      }
-                      style={{ fontSize: '10px' }}
-                    >
-                      Delete Manuscript
-                    </button>
-                  ) : (
-                    <p>You do not have permission to delete this manuscript.</p>
-                  )}
+          {visibleManuscripts.length > 0 ? (
+            visibleManuscripts.map(manuscript => (
+              <tr key={manuscript.manuscript_id}>
+                <td>{manuscript.title}</td>
+                <td>{manuscript.author}</td>
+                <td>{manuscript.author_email}</td>
+                <td><CollapsibleText text={manuscript.text} limit={50}/></td>
+                <td>{manuscript.abstract}</td>
+                <td>{manuscript.editor_email}</td>
+                <td>{(manuscript.referees||[]).join(", ") || "—"}</td>
+                <td className="state-container">
+                  <div className="state">{manuscript.state}</div>
+                  <div className="state-description">{manuscript.state_description}</div>
                 </td>
-                </tr> 
-              ))
-          
+                <td className="actions-list">
+                  <UpdateActionButton
+                    manuscript={manuscript}
+                    refreshManu={fetchManu}
+                    referees={referees}
+                    setError={setError}
+                    userRoles={userRoles}
+                    currentUserEmail={currentUserEmail}
+                  />
+                  <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
+                </td>
+                <td>
+                  {isEditor
+                    ? (manuscript.state !== 'PUB'
+                        ? <button onClick={() => setEditingManuscript(manuscript)}>Edit</button>
+                        : <p>Cannot edit a published manuscript.</p>)
+                    : <p>No permission to edit.</p>}
+                </td>
+                <td>
+                  {isEditor
+                    ? <button onClick={() => deleteManuscript(manuscript)}>Delete</button>
+                    : <p>No permission to delete.</p>}
+                </td>
+              </tr>
+            ))
           ) : (
             <tr>
-              <td colSpan="8">No manuscripts found.</td>
+              <td colSpan="11">No manuscripts found.</td>
             </tr>
           )}
         </tbody>
-        
+
       </table>
 
       {editingManuscript && (
