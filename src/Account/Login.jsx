@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BACKEND_URL } from '../constants';
 import '../App.css';
 
 function Login() {
@@ -14,7 +15,7 @@ function Login() {
     setSuccessMsg('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/login', {
+      const response = await fetch(`${BACKEND_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

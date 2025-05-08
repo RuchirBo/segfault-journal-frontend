@@ -41,7 +41,7 @@ function Register() {
         body: JSON.stringify({
           email,
           password,
-          role: roles.length > 0 ? roles[0] : '', // Assuming only one role is needed at registration
+          role: roles.length > 0 ? roles[0] : '', 
         }),
       });
 
