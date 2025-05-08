@@ -45,7 +45,7 @@ const availableActionsMap = {
 const getAvailableActions = (state) => availableActionsMap[state] || [];
 
 
-const filterActionsByRole = (state, roles) => {
+const filterActionsByRole = (state, roles, isOwner) => {
 
   const hasEditorRole = roles.includes("EDITOR") || roles.includes("ED");
   const hasMERole = roles.includes("MANAGING EDITOR") || roles.includes("ME")
@@ -59,7 +59,12 @@ const filterActionsByRole = (state, roles) => {
   }
   
   if (hasAuthorRole) {
-    return getAvailableActions(state).filter(action => action === "WITHDRAW" || action === "DON");
+    //return getAvailableActions(state).filter(action => action === "WITHDRAW" || action === "DON");
+    return getAvailableActions(state)
+      .filter(action =>
+        action === "DON" ||
+        (action === "WITHDRAW" && isOwner)
+      );
   }
   
   if (hasRefereeRole) {
@@ -69,14 +74,18 @@ const filterActionsByRole = (state, roles) => {
   return [];
 };
 
-function UpdateActionButton({ manuscript, refreshManu, setError, referees, userRoles}) {
+function UpdateActionButton({ manuscript, refreshManu, setError, referees, userRoles, currentUserEmail }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedAction, setSelectedAction] = useState("");
   const [showRefSelect, setShowRefSelect] = useState(false);
   const [selectedRef, setSelectedRef] = useState("");
 
   // const actions = getAvailableActions(manuscript.state);
-  const availableActions = filterActionsByRole(manuscript.state, userRoles);
+  const availableActions = filterActionsByRole(
+    manuscript.state, 
+    userRoles,
+    manuscript.author_email === currentUserEmail
+  );
 
 
   const handleActionSelect = e => {
@@ -162,12 +171,14 @@ UpdateActionButton.propTypes = {
     manuscript_id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
     state: propTypes.string.isRequired,
+    author_email:     propTypes.string.isRequired,
     referees: propTypes.arrayOf(propTypes.string).isRequired,
   }).isRequired,
   refreshManu: propTypes.func.isRequired,
   setError: propTypes.func.isRequired,
   referees: propTypes.arrayOf(propTypes.string).isRequired,
   userRoles: propTypes.string.isRequired,
+  currentUserEmail: propTypes.string.isRequired,
 };
 
 
@@ -310,6 +321,7 @@ function Manuscripts() {
   const [referees, setReferees] = useState([]);
   const [isEditor, setIsEditor] = useState(false);
   const [userRoles, setUserRoles] = useState([]);
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
 
   useEffect(() => {
     axios.get(PEOPLE_READ_ENDPOINT)
@@ -370,6 +382,7 @@ function Manuscripts() {
         console.log(userData)
 
         setUserRoles(userData.role); 
+        setCurrentUserEmail(userData.email);
 
         const isEditorResponse = await axios.get(`${BACKEND_URL}/people/editors`, {
           withCredentials: true,
@@ -484,6 +497,7 @@ function Manuscripts() {
                       referees={referees}
                       setError={setError}
                       userRoles={userRoles}
+                      currentUserEmail={currentUserEmail}
                     />
                     <Link to={`/manuscripts/${manuscript.manuscript_id}`}>View</Link>
                   </td>
